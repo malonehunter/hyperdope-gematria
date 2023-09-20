@@ -34,11 +34,11 @@ The Hyperdope Gematria project values these principles:
 
 ## Getting Started
 
-Host your own phrase matching gematria calculator by adding these files to your web server.
+This repo can cloned as-is to your web server for self-hosting the fully featured gematira calulator.
 
-An easy way to run the calculator locally is to open the project in Visual Studio Code and use the Go Live extension.
+The calculator can also be used robustly from your local machine, without some features.  Clone the project and open index.html in your browser.
 
-To add more words or phrases to the matching database add them as new lines in the db.txt file.
+> NOTE: To add more words or phrases to the matching database, add them as new lines in the db.txt file.
 
 
 ## Contributing
