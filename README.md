@@ -14,13 +14,13 @@ The Hyperdope Gematria project values these principles:
 
 <ul>
 <li>Rapidly accessible and relevant word and phrase matching</li>
-<li>Favor inclusion of any cypher useful to the community</li>
+<li>Favor inclusion of cyphers useful to the community</li>
 <li>Always free and open source</li>
 </ul>
 
 ### Features:
 <ul>
-<li>AUTOLOADING DATABASE for instant query matching</li>
+<li>AUTOLOADING DATABASE for instant word and phrase matching</li>
 <li>History table editing</li>
 <li>Dynamic highlighter with filtering</li>
 <li>Support for characters with diacritical marks</li>
@@ -34,9 +34,7 @@ The Hyperdope Gematria project values these principles:
 
 ## Getting Started
 
-This repo can cloned as-is to your web server for self-hosting the fully featured gematira calulator.
-
-The calculator can also be used robustly from your local machine, without some features.  Clone the project and open index.html in your browser.
+This repo can cloned as-is to your web server for self-hosting your own fully-featured gematira calulator.
 
 > NOTE: To add more words or phrases to the matching database, add them as new lines in the db.txt file.
 
@@ -63,9 +61,9 @@ Distributed under the GNU General Public License v2.0. See `LICENSE` for more in
 <!-- CONTACT -->
 ## Contact
 
-Hyperdope Official- [@lnhyper](https://twitter.com/lnhyper) - [email](hyperdopeofficial@protonmail.com)
+Hyperdope Official- [@lnhyper](https://twitter.com/lnhyper) - hyperdopeofficial@protonmail.com
 
-Project Link: [Hyperdope Ggematria](https://github.com/malonehunter/hyperdope-gematria)
+Project Link: [Hyperdope Gematria](https://github.com/malonehunter/hyperdope-gematria)
 
 
 <!-- ACKNOWLEDGMENTS -->
