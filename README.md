@@ -34,14 +34,14 @@ The Hyperdope Gematria project values these principles:
 
 ## Getting Started
 
-This repo can cloned as-is to your web server for self-hosting your own fully-featured gematira calulator.
+This repo can be cloned as-is to your web server for self-hosting your own fully-featured gematira calulator.
 
-> NOTE: To add more words or phrases to the matching database, add them as new lines in the db.txt file.
+> NOTE: To add more words or phrases to the matching database append them in new lines to the db.txt file.
 
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Any contributions you make are **greatly appreciated**.
 
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 
