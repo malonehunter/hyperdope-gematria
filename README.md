@@ -70,5 +70,5 @@ Project Link: [Hyperdope Gematria](https://github.com/malonehunter/hyperdope-gem
 ## Acknowledgments
 
 * Saun-Virroco, the creator of Gematro, on which this calculator is almost entirely based.  
-* [NetVoid, for preserving the Gematro repo and holding initial word matching database in contingency](https://github.com/CyphersNews/cyphersnews.github.io)
-* [Alektryon, for contributing key cyphers](https://github.com/Alektryon)
+* [NetVoid, who preserved the Gematro repo and held the initial word matching database in contingency](https://github.com/CyphersNews/cyphersnews.github.io)
+* [Alektryon, who contributed key cyphers](https://github.com/Alektryon)
