@@ -138,7 +138,7 @@ function initCalc(defSet = false) { // run after page has finished loading
 	createCalcMenus()
 	enableDefaultCiphers()
 	saveCalcSettingsLocalStorage(true) // save default settings
-	showWelcomeMessage("Hyperdope Gematria Calculator")
+	showWelcomeMessage("Hyperdope Gematria")
 }
 
 var welcomeShown = false
