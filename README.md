@@ -70,6 +70,6 @@ Project Link: [Hyperdope Gematria](https://github.com/malonehunter/hyperdope-gem
 <!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* Saun-Virroco, the creator of Gematro, on which this calculator is almost entirely based.  
+* Special thanks to Saun-Virroco, the creator of Gematro, on which this calculator is almost entirely based.  
 * [NetVoid, who preserved the Gematro repo and secured the database](https://github.com/CyphersNews/cyphersnews.github.io)
 * [Alektryon, who contributed key cyphers and configurations](https://github.com/Alektryon)
