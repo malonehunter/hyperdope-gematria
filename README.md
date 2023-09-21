@@ -61,7 +61,7 @@ Distributed under the GNU General Public License v2.0. See `LICENSE` for more in
 <!-- CONTACT -->
 ## Contact
 
-Hyperdope Official- [@lnhyper](https://twitter.com/lnhyper) - hyperdopeofficial@protonmail.com
+Hyperdope Official - [@lnhyper](https://twitter.com/lnhyper) - hyperdopeofficial@protonmail.com
 
 Project Link: [Hyperdope Gematria](https://github.com/malonehunter/hyperdope-gematria)
 
