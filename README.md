@@ -6,7 +6,7 @@
 
 ## About The Project
 
-Decode your reality and discover hidden synchronicities.  Gematria is everywhere.
+Decode your reality.  Discover hidden synchronicities.  Gematria is everywhere!
 
 Try it live at http://www.hyperdope.com/gematria
 
@@ -14,18 +14,18 @@ The Hyperdope Gematria project values these principles:
 
 <ul>
 <li>Rapidly accessible and relevant word and phrase matching</li>
-<li>Favor inclusion of cyphers useful to the community</li>
+<li>Favor inclusion of any well-defined cyphers useful to the community</li>
 <li>Always free and open source</li>
 </ul>
 
 ### Features:
 <ul>
-<li>AUTOLOADING DATABASE for instant word and phrase matching</li>
+<li>AUTOLOADING classic gematria word database for instant phrase matching</li>
 <li>History table editing</li>
 <li>Dynamic highlighter with filtering</li>
 <li>Support for characters with diacritical marks</li>
 <li>History export/import (CSV format)</li>
-<li>Fully customizable ciphers (Unicode)</li>
+<li>Fully customizable cyphers (Unicode)</li>
 <li>Color controls</li>
 <li>Screenshot tools</li>
 <li>Quickstart guide included</li>
@@ -70,5 +70,5 @@ Project Link: [Hyperdope Gematria](https://github.com/malonehunter/hyperdope-gem
 ## Acknowledgments
 
 * Saun-Virroco, the creator of Gematro, on which this calculator is almost entirely based.  
-* [NetVoid, who preserved the Gematro repo and held the initial word matching database in contingency](https://github.com/CyphersNews/cyphersnews.github.io)
-* [Alektryon, who contributed key cyphers](https://github.com/Alektryon)
+* [NetVoid, who preserved the Gematro repo and secured the database](https://github.com/CyphersNews/cyphersnews.github.io)
+* [Alektryon, who contributed key cyphers and configurations](https://github.com/Alektryon)
