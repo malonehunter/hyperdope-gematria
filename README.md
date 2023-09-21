@@ -28,7 +28,7 @@ The Hyperdope Gematria project values these principles:
 <li>Fully customizable cyphers (Unicode)</li>
 <li>Color controls</li>
 <li>Screenshot tools</li>
-<li>Quickstart guide included</li>
+<li>Quickstart guide</li>
 </ul>
 
 
@@ -44,7 +44,7 @@ To learn more about how to use Hyperdope Gematria, see the Quickstart Guide in t
 
 Any contributions you make are **greatly appreciated**.  Please report any issues or bugs.  Errors in the cyphers will be fixed with highest priority.
 
-If you have a suggestion that would improve the project, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+If you have a suggestion that would improve the tool, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -62,7 +62,7 @@ Distributed under the GNU General Public License v2.0. See `LICENSE` for more in
 <!-- CONTACT -->
 ## Contact
 
-Hyperdope Official - [@lnhyper on Twitter/X](https://twitter.com/lnhyper) - hyperdopeofficial@protonmail.com
+Hyperdope Official - [@LNHyper on Twitter/X](https://twitter.com/lnhyper) - hyperdopeofficial@protonmail.com
 
 Project Link: [Hyperdope Gematria](https://github.com/malonehunter/hyperdope-gematria)
 
