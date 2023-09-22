@@ -36,7 +36,7 @@ The Hyperdope Gematria project values these principles:
 
 To learn more about how to use Hyperdope Gematria, see the Quickstart Guide in the app under the About menu.
 
-This repo can be cloned as-is to your **web server** for self-hosting your own fully-featured gematira calulator.
+This repo can be cloned as-is to your **web server** for self-hosting your own fully-featured gematira calulator with integrated database matching.
 
 To add more words or phrases to the matching database append them as new lines to the db.txt file.
 
