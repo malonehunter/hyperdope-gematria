@@ -42,7 +42,9 @@ To add more words or phrases to the matching database append them as new lines t
 
 > NOTE: You must run this app from a web server for the word matching database to autoload due to the way browsers handle local file security.  Please see [this CORS error article](https://stackoverflow.com/questions/58879729/access-to-xmlhttprequest-at-file-sample-txt-from-origin-null-blocked-by-c) for more information.  A quick way to run db matching offline locally is to open the project folder in VS Code and launch it with the Live Server extension.  
 
-If you do not need the auto loading db feature, simply download the repo and open index.html.  
+If you do not need the auto loading db feature, simply download the repo and open index.html.
+
+If you are not interested in using this tool offline or self-hosting, you can always use the project's [official hosted version](http://www.hyperdope.com/gematria).
 
 
 ## Contributing
