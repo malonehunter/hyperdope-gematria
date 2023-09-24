@@ -36,7 +36,7 @@ The Hyperdope Gematria project values these principles:
 
 To learn more about how to use Hyperdope Gematria, see the Quickstart Guide in the app under the About menu.
 
-This repo can be cloned as-is to your **web server** for self-hosting your own fully-featured gematira calulator with integrated database matching.
+This repo may be cloned as-is to your **web server** for self-hosting your own fully-featured gematira calulator with integrated database matching.
 
 To add more words or phrases to the matching database append them as new lines to the db.txt file.
 
@@ -44,7 +44,7 @@ To add more words or phrases to the matching database append them as new lines t
 
 If you do not need the auto loading db feature, simply download the repo and open index.html.
 
-If you are not interested in using this tool offline or self-hosting, you can always use the project's [official hosted version](http://www.hyperdope.com/gematria).
+If you are not interested in using this tool offline or self-hosting and just want to use the tool with the full word matching experience, navigate the project's [official hosted version](http://www.hyperdope.com/gematria).
 
 
 ## Contributing
