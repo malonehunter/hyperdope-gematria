@@ -98,7 +98,7 @@ function listNumberPropertiesAlt(val) {
 
 	o += '<tr><td colspan=2 class="numPropLabel">Tic Xenotation</td></tr>'
 	o += '<tr><td colspan=2 class="numTicXeno">'+getNumXenotation(val)+'</td></tr>'
-	o += '<tr><td colspan=2 class="numTicXeno">'+getNumNullXenotation(val)+'</td></tr>'
+//	o += '<tr><td colspan=2 class="numTicXeno">'+getNumNullXenotation(val)+'</td></tr>'
 
 	o += '<tr><td colspan=2><hr class="numPropSeparator"></td></tr>'
 
