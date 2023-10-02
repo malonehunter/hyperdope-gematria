@@ -327,7 +327,7 @@ $(document).ready(function(){
 		// 123_number_properties.png OR 123_alt_number_properties.png
 		var curNum = document.querySelector('.numPropTooltip').dataset.number // current number
 		var fileName = curNum+"_number_properties.png";
-		openImageWindow(".numPropTooltip", fileName, 2.0);
+		openImageWindow(".numPropTooltip", fileName, optImageScale);
 	});
 
 	function loadFile(filePath) {
@@ -343,6 +343,10 @@ $(document).ready(function(){
 
 	  //Autoload DB
 	  var file = loadFile('db.txt');
+	  importFileAction(file, true);
+
+	  //Autoload Theme
+	  var file = loadFile('theme/default-interface.js');
 	  importFileAction(file, true);
 
 	$("body").on("change", "#importFileDummy", function(){
@@ -392,6 +396,8 @@ var freq = []; // frequency of matches found with auto highlighter (combined)
 
 var prevPhrID = -1 // index of previously selected phrase in history table
 var prevCiphIndex = -1 // index of previously selected cipher in enabled ciphers table
+
+var showCapsCipherChart = false // display uppercase letters in Cipher Chart
 
 $(document).ready(function(){
 	
@@ -471,8 +477,36 @@ $(document).ready(function(){
 	});
 	
 	// breakdown or cipher table letter/number clicked
-	$("body").on("click", ".ChartChar, .ChartVal, .BreakChar, .BreakVal, .BreakValDark, .BreakWordSum", function () {
+	$("body").on("click", ".ChartVal, .BreakChar, .BreakVal, .BreakValDark, .BreakWordSum", function () {
 		$(this).toggleClass('highlightCipherTable'); 
+	});
+	// cipher chart letter click (keyboard)
+	$("body").on("click", ".ChartChar", function () { // letters
+		$('#phraseBox').val($('#phraseBox').val()+$(this).text());
+		$(this).toggleClass('highlightCipherTable'); el = $(this);
+		setTimeout(function (){ el.toggleClass('highlightCipherTable'); }, 75);
+		updateEnabledCipherTable();
+		updateWordBreakdown(breakCipher,false,false);
+	});
+	$("body").on("click", "#spaceChartBtn", function () { // space
+		$('#phraseBox').val($('#phraseBox').val()+' ');
+		$(this).toggleClass('highlightCipherTable'); el = $(this);
+		setTimeout(function (){ el.toggleClass('highlightCipherTable'); }, 75);
+		updateEnabledCipherTable();
+		updateWordBreakdown(breakCipher,false,false);
+	});
+	$("body").on("click", "#backspaceChartBtn", function () { // backspace
+		$('#phraseBox').val($('#phraseBox').val().slice(0,-1));
+		$(this).toggleClass('highlightCipherTable'); el = $(this);
+		setTimeout(function (){ el.toggleClass('highlightCipherTable'); }, 75);
+		updateEnabledCipherTable();
+		updateWordBreakdown(breakCipher,false,false);
+	});
+	$("body").on("click", "#capsNameChartBtn", function () { // shift
+		showCapsCipherChart = !showCapsCipherChart
+		updateWordBreakdown(breakCipher,false,true); // update chart
+		$(this).toggleClass('highlightCipherTable'); el = $(this);
+		setTimeout(function (){ el.toggleClass('highlightCipherTable'); }, 75);
 	});
 
 	// history table value clicked (right mouse button)

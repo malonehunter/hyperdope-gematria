@@ -21,6 +21,9 @@ The Hyperdope Gematria project values these principles:
 ### Features:
 <ul>
 <li>AUTOLOADING gematria word database for instant phrase matching</li>
+<li>AUTO Theme - set your favorite calculator skin to load by default</li>
+<li>Virtual Keyboard</li>
+<li>Configurable image scaling</li>
 <li>History table editing</li>
 <li>Dynamic highlighter with filtering</li>
 <li>Support for characters with diacritical marks</li>
@@ -45,6 +48,10 @@ To add more words or phrases to the matching database append them as new lines t
 If you do not need the auto loading db feature, simply download the repo and open index.html.
 
 If you are not interested in using this tool offline or self-hosting and just want to use the tool with the full word matching experience, navigate the project's [official hosted version](http://www.hyperdope.com/gematria).
+
+### Changing the Theme
+
+To change the theme of the calclulator interface first backup your current default-interface.js (in the theme/ folder). Make a copy of your desired theme and rename it to default-interface.js.
 
 
 ## Contributing

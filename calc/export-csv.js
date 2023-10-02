@@ -81,8 +81,8 @@ function importFileAction(file, hasLocalFile) {
 	
 		// detect cipher.js, load user ciphers
 		if (uCiph[0] == "// ciphers.js") {
-			optShowExtraCiphers = false // clear "Show Extra Ciphers" option
-			document.getElementById('chkbox_SEC').checked = false
+			// optShowExtraCiphers = false // clear "Show Extra Ciphers" option
+			// document.getElementById('chkbox_SEC').checked = false
 
 			if (precalcDBLoaded) { // return if precalculated database is loaded
 				displayCalcNotification("Cipher import is disabled for CSV Databases!", 3000)

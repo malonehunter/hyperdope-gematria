@@ -85,6 +85,8 @@ var coderainSatDefault = 0.2
 var coderainLit = 0.19  // coderain lightness
 var coderainLitDefault = 0.19
 
+var optImageScale = 1.0 // image scaling factor for screenshots
+
 var calcOptionsArr = [ // used to export/import settings
 	"'optNumCalcMethod'+' = '+optNumCalcMethod",
 	"'optFiltCrossCipherMatch'+' = '+optFiltCrossCipherMatch",
@@ -120,15 +122,13 @@ var calcOptionsArr = [ // used to export/import settings
 	"'optGemMultCharPosReverse'+' = '+optGemMultCharPosReverse",
 	'"encDefAlphArr"+" = \x27"+String(encPrevAlphStr).replace(/,/g,"")+"\x27"',
 	'"encDefVowArr"+" = \x27"+String(encPrevVowStr).replace(/,/g,"")+"\x27"',
-	'"encDefExcLetArr"+" = \x27"+String(encPrevExcLetStr).replace(/,/g,"")+"\x27"'
+	'"encDefExcLetArr"+" = \x27"+String(encPrevExcLetStr).replace(/,/g,"")+"\x27"',
+	"'optImageScale'+' = '+optImageScale"
 ]
 
 var runOnceRestoreCalcSet = true
 function initCalc(defSet = false) { // run after page has finished loading
 	configureCalcInterface(true)
-	if (navigator.userAgent.match('Android')) {
-		$('#enterPhraseBtn').removeClass('hideValue') // "Enter" button for Android devices
-	}
 	if (defSet && typeof calcOpt !== 'undefined') importCalcOptions(calcOptions); // load settings from ciphers.js
 	generateRndColors()
 	if (runOnceRestoreCalcSet && window.localStorage.getItem('userCalcSettings') !== null) {
@@ -299,8 +299,8 @@ function createAboutMenu() { // create menu with all cipher catergories
 	// o += '<div style="margin: 1em;"></div>'
 	// o += '<input class="intBtn" type="button" value="Join Discord Server" onclick="gotoDiscordServer()">'
 	// o += '<div style="margin: 0.5em;"></div>'
-	// o += '<input class="intBtn" type="button" value="GitHub Repository" onclick="gotoGitHubRepo()">'
-	// o += '<div style="margin: 0.5em;"></div>'
+	o += '<input class="intBtn" type="button" value="GitHub Repository" onclick="gotoGitHubRepo()">'
+	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input class="intBtn" type="button" value="Quickstart Guide" onclick="displayQuickstartGuide()">'
 	// o += '<div style="margin: 0.5em;"></div>'
 	// o += '<input class="intBtn" type="button" value="Contacts" onclick="displayContactInfo()">'
@@ -310,7 +310,7 @@ function createAboutMenu() { // create menu with all cipher catergories
 	document.getElementById("calcOptionsPanel").innerHTML = o
 }
 
-function gotoGitHubRepo() { window.open("/home.html", "_blank") }
+function gotoGitHubRepo() { window.open("https://github.com/malonehunter/hyperdope-gematria", "_blank") }
 
 function gotoDiscordServer() { window.open("/home.html", "_blank") }
 
@@ -611,6 +611,8 @@ function createExportMenu() {
 	o += '<input id="btn-num-props-png" class="intBtn" type="button" value="Print Number Properties">' // print number properties
 	o += '<div style="margin: 0.5em;"></div>'
 	o += '<input id="btn-date-calc-png" class="intBtn" type="button" value="Print Date Durations">' // print date durations
+
+	o += '<div class="enterAsWordsLimit"><span class="optionTableLabel">Image scale</span><input id="iScaleBox" onchange="conf_iScale()" type="text" value="'+optImageScale.toFixed(1)+'"></div>' // image scale
 	
 	o += '<hr style="background-color: var(--separator-accent2); height: 1px; border: none; margin: 0.75em;">'
 
@@ -644,6 +646,10 @@ function createExportMenu() {
 
 	o += '</div></div>'
 	document.getElementById("calcOptionsPanel").innerHTML = o
+}
+function conf_iScale() { // image scale
+	var element = document.getElementById("iScaleBox")
+	optImageScale = Number(Number(element.value).toFixed(1)) // 1.0
 }
 
 // ========================= Color Functions ========================
@@ -1379,7 +1385,7 @@ function phraseBoxKeypress(e) { // run on each keystroke inside text box - onkey
 
 function addPhraseToHistory(phr, upd) { // add new phrase to search history
 	var phrPos
-	if (phr !== "" && isNaN(phr)) { // if input is not empty and not a number
+	if (phr !== "" && isNaN(phr) || phr == "Infinity") { // if input is not empty and not a number
 		phrPos = sHistory.indexOf(phr);
 		if (phrPos > -1) { // if phrase is in history
 			sHistory.splice(phrPos, 1) // first remove it from array
@@ -1391,7 +1397,7 @@ function addPhraseToHistory(phr, upd) { // add new phrase to search history
 
 function addPhraseToHistoryUnshift(phr, upd) { // add new phrase to the beginning
 	var phrPos
-	if (phr !== "" && isNaN(phr)) { // if input is not empty and not a number
+	if (phr !== "" && isNaN(phr) || phr == "Infinity") { // if input is not empty and not a number
 		phrPos = sHistory.indexOf(phr);
 		if (phrPos > -1) { // if phrase is in history
 			sHistory.splice(phrPos, 1) // first remove it from array

@@ -534,6 +534,13 @@ body {
 	text-align: center;
 	padding-bottom: 1em;
 }
+.ChartChar, .ChartVal, #spaceChartBtn, #capsNameChartBtn, #backspaceChartBtn {
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
 
 /*        Buttons, Text Boxes, Controls       */
 /* ########################################## */
@@ -742,7 +749,7 @@ body {
 	font-family: var(--font-family), "Arial", sans-serif;
 	outline: none;
 	background-color: var(--btn-bg-accent);
-	background-color: transparent;
+	/*background-color: transparent;*/
 }
 .intBtn2, .ciphEditBtn { /* Cipher Categories */
 	display: inline-block;
@@ -757,7 +764,7 @@ body {
 	font-family: var(--font-family), "Arial", sans-serif;
 	outline: none;
 	background-color: var(--btn-bg-accent);
-	background-color: transparent;
+	/*background-color: transparent;*/
 }
 .ciphEditBtn {
 	width: auto;
@@ -776,7 +783,7 @@ body {
 	font-family: var(--font-family), "Arial", sans-serif;
 	outline: none;
 	background-color: var(--btn-bg-accent);
-	background-color: transparent;
+	/*background-color: transparent;*/
 }
 @media (max-width: 911px) { /* mobile */
 	#queryDBbtn {
@@ -824,6 +831,7 @@ body {
 	margin: 0em 0em 0em 0.3em;
 	min-width: 30px;
 	max-width: 30px;
+	color: var(--border-accent);
 }
 #calcNotification {
 	position: absolute;
@@ -874,8 +882,9 @@ body {
 	padding: 0.3em;
 }
 .enterAsWordsLimit {
-	border: 1px solid var(--border-accent);
 	text-align: right;
+	border: 1px solid var(--border-accent);
+	background-color: var(--btn-bg-accent);
 	color: var(--font-white-2);
 	font-weight: 500;
 	width: 100%;
@@ -898,7 +907,7 @@ body {
 .optionTableLabel {
 	font-size: 80%;
 }
-#phrLimitBox, #dbPageItemsBox, #dbScrollItemsBox {
+#phrLimitBox, #dbPageItemsBox, #dbScrollItemsBox, #iScaleBox {
 	width: 50px;
 	border: none;
 	color: var(--font-white-2);

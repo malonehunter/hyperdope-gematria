@@ -14,10 +14,6 @@ function displayQuickstartGuide() {
 
 	o += '<hr class="numPropSeparator">'
 
-	o += '<ul><li><a class="qgLink" href="https://gematriaresearch.blogspot.com/">Gematria Research (Luís Gonçalves)</a><br><span class="qgNote">History of neglected ciphers and methods used in the practice of gematria</span></li></ul>'
-	
-	o += '<hr class="numPropSeparator">'
-
 	o += '<p class="qgMedium">Phrase Box - enter any word, phrase or number</p>\n<ul><li><span class="qgBold">"Enter"</span> - add phrase to history table</li><li><span class="qgBold">"Up"</span> and <span class="qgBold">"Down"</span> arrow keys - select phrase from history table<br>Press <span class="qgBold">"Down"</span> to select previously entered phrase</li><li><span class="qgBold">"Delete"</span> - delete current phrase from history table</li><li>Additional Shortcuts:<br><span class="qgBold">"Home"</span> - clear history table<br><span class="qgBold">"End"</span> - shortcut for <span class="qgBold">"Enter As Words"</span> function</li></ul>'
 
 	o += '<p class="qgMedium">Highlight Box - enter space delimited numbers</p>\n<ul><li><span class="qgBold">"Enter"</span> - activate filter (remove nonmatching phrases and ciphers)</li><li><span class="qgBold">"Delete"</span> - clear box contents (does not reset filter)<br><span class="qgNote">Note: Reset filter with an "X" button near the box</span></li><li>Additional Shortcuts:<br><span class="qgBold">"Insert"</span> - find all available matches<br><span class="qgBold">"Ctrl + Delete"</span> - reset filter and revert to initial history state<br><span class="qgNote">Note: Type "0 0" or "Ctrl + Left Click" on "0" cell twice to highlight zero<br>History table is recalculated on each keystroke</span></li></ul>'
@@ -26,7 +22,7 @@ function displayQuickstartGuide() {
 
 	o += '<p class="qgMedium">Number Properties</p>\n<ul><li><span class="qgBold">"Ctrl"</span> key pressed, mouse over number - show number properties</li><li><span class="qgBold">"Shift"</span> key pressed, mouse over number - show additional number properties</li><li>All properties are supported only for values up to 10 million</li><li>Drag cursor across the tooltip to close it<br>Mobile devices - click on the tooltip first, then click outside to close<br><span class="qgNote">Note: Number Properties are available inside Enabled Ciphers Table, History Table and Query Table</span></li></ul>'
 
-	o += '<p class="qgMedium">Cipher/Breakdown Chart</p>\n<ul><li><span class="qgBold">"Left Click"</span> on letters/values to highlight cells</li></ul>'
+	o += '<p class="qgMedium">Cipher/Breakdown Chart</p>\n<ul><li><span class="qgBold">Cipher Chart</span> can be used as a virtual keyboard</li><li><span class="qgBold">"Left Click"</span> in top left corner for <span class="qgBold">Space</span>, top right corner for <span class="qgBold">Backspace</span></li><li><span class="qgBold">"Left Click"</span> on Cipher Name to switch to uppercase letters</li><li><span class="qgBold">"Left Click"</span> on letters to type</li><li><span class="qgBold">"Left Click"</span> on numbers/letters to highlight cells (<span class="qgBold">Breakdown Chart</span>)</li></ul>'
 
 	o += '<p class="qgMedium">History Table</p><ul><li><span class="qgBold">"Left Click"</span> on value - toggle blinking effect (temporary)</li><li><span class="qgBold">"Right Click"</span> on value - toggle cell visibility (temporary)</li><li><span class="qgBold">"Shift + Left Click"</span> on cipher name - disable cipher</li><li><span class="qgBold">"Shift + Left Click"</span> on phrase - delete phrase from history</li><li><span class="qgBold">"Ctrl + Left Click"</span> on phrase - load phrase into <span class="qgBold">Phrase Box</span></li><li><span class="qgBold">"Ctrl + Right Click"</span> on phrase - reorder phrases, select the same phrase to cancel</li><li><span class="qgBold">"Ctrl + Left Click"</span> on value (cell) - toggle highlighting for number<br>Highlighter always recalculates table, temporary effects are removed<br><span class="qgNote">Note: Click on cell, not on the number itself, otherwise you will open number properties</span></li></ul>'
 
@@ -79,7 +75,9 @@ function displayQuickstartGuide() {
 	o += '<hr class="numPropSeparator">'
 	o += '<p><span class="qgBold2">Export</p>'
 
-	o += '<ul><li><span class="qgBold">"Print Cipher Chart", etc</span> - render correspondent element as an image (PNG), image preview is opened first<br><span class="qgNote">Note: If text or table are misaligned, click "Refresh" button to generate a new image</span></li>'
+	o += '<ul><li><span class="qgBold">"Print Cipher Chart", etc</span> - render corresponding element as an image (PNG), image preview is opened first<br><span class="qgNote">Note: If text or table are misaligned, click "Refresh" button to generate a new image</span></li>'
+
+	o += '<li><span class="qgBold">"Image Scale"</span> - scaling factor to control screenshot size (e.g. 1.0, 1.5, 2.0)</li>'
 
 	o += '<li><span class="qgBold">"Import File"</span> - import a <span class="qgBold">.txt</span> file (one phrase per line), previously exported CSV history, exported matches or user ciphers<br><span class="qgNote">Note: You can also drag and drop file into Phrase Box</span></li>'
 
@@ -116,7 +114,7 @@ function displayQuickstartGuide() {
 
 	o += '<p class="qgMedium">Query Table</p>\n'
 
-	o += '<ul><li>Use <span class="qgBold">Search Bar</span> to filter results<ul><li><span class="qgBold">"Enter"</span> - apply filter<br><span class="qgNote">Note: If box is empty, filter is cleared</span></li><li><span class="qgBold">"Delete"</span> - clear filter</li></ul><span class="qgNote">Note: Search Bar supports regular expressions</span>'
+	o += '<ul><li>Use <span class="qgBold">Search Bar</span> to filter results<ul><li><span class="qgBold">"Enter"</span> - apply filter<br><span class="qgNote">Note: If box is empty, filter is cleared</span></li><li><span class="qgBold">"Delete"</span> - clear filter</li></ul><span class="qgNote">Note: Search is case sensitive, regular expressions are supported</span>'
 
 	o += '<li>Use <span class="qgBold">"Up"</span> and <span class="qgBold">"Down"</span> arrow keys to scroll one page at a time or use the mouse wheel<br><span class="qgNote">Note: Up/Down arrow keys work only when input is focused inside textbox with current index</span></li><li>A horizontal scroll bar above the table can be used for navigation as well or you can input the exact position inside the box with index</li>'
 
