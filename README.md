@@ -6,9 +6,9 @@
 
 ## About The Project
 
-Decode your reality.  Discover hidden synchronicities.  Gematria is everywhere!
+Decode your reality.  Discover hidden synchronicities and encode your own!
 
-Try it live at http://www.hyperdope.com/gematria
+Try it live at https://www.hyperdope.com/gematria
 
 The Hyperdope Gematria project values these principles:
 
@@ -20,8 +20,8 @@ The Hyperdope Gematria project values these principles:
 
 ### Features:
 <ul>
-<li>AUTOLOADING gematria word database for instant phrase matching</li>
-<li>AUTO Theme - set your favorite calculator skin to load by default</li>
+<li>AUTOLOADING word database for instant phrase matching</li>
+<li>Themes! Set your favorite of 10 calculator skins to load by default</li>
 <li>Virtual Keyboard</li>
 <li>Configurable image scaling</li>
 <li>History table editing</li>
@@ -37,21 +37,25 @@ The Hyperdope Gematria project values these principles:
 
 ## Getting Started
 
-To learn more about how to use Hyperdope Gematria, see the Quickstart Guide in the app under the About menu.
+To learn more about how to use Hyperdope Gematria see the Quickstart Guide in the app under the About menu.
 
 This repo may be cloned as-is to your **web server** for self-hosting your own fully-featured gematira calulator with integrated database matching.
 
-To add more words or phrases to the matching database append them as new lines to the db.txt file.
+To add more words or phrases to the matching database append them as new lines to the db.txt.
 
 > NOTE: You must run this app from a web server for the word matching database to autoload due to the way browsers handle local file security.  Please see [this CORS error article](https://stackoverflow.com/questions/58879729/access-to-xmlhttprequest-at-file-sample-txt-from-origin-null-blocked-by-c) for more information.  A quick way to run db matching offline locally is to open the project folder in VS Code and launch it with the Live Server extension.  
 
-If you do not need the auto loading db feature, simply download the repo and open index.html.
+If you do not need the auto loading db feature simply download the repo and open index.html.
 
 If you are not interested in using this tool offline or self-hosting and just want to use the tool with the full word matching experience, navigate the project's [official hosted version](http://www.hyperdope.com/gematria).
 
 ### Changing the Theme
 
-To change the theme of the calclulator interface first backup your current default-interface.js (in the theme/ folder). Make a copy of your desired theme and rename it to default-interface.js.
+There are 10 themes packaged with Hyperdope Gematria: black, blue, green, green alt, red charcoal, teal, white, and old book (normal, bright, and dim).
+
+The blue theme is set to default and has been copied into theme/default-interface.js.  To change the theme, rename default-interface.js to something like default-interface-backup.js, make a copy of your desired theme and rename that file to default-interface.js.
+
+> NOTE: The selected theme is the primary configuration file for the calculator, replacing ciphers.js.  If you want to change the cypher list or any of the default options you must edit the theme file.
 
 
 ## Contributing
@@ -76,7 +80,7 @@ Distributed under the GNU General Public License v2.0. See `LICENSE` for more in
 <!-- CONTACT -->
 ## Contact
 
-Hyperdope Official - [@LNHyper on Twitter/X](https://twitter.com/lnhyper) - hyperdopeofficial@protonmail.com
+Hyperdope Official - [@LNHyper on X](https://twitter.com/lnhyper) - hyperdopeofficial@protonmail.com
 
 Project Link: [Hyperdope Gematria](https://github.com/malonehunter/hyperdope-gematria)
 
@@ -86,4 +90,4 @@ Project Link: [Hyperdope Gematria](https://github.com/malonehunter/hyperdope-gem
 
 * Special thanks to Saun-Virroco, the creator of Gematro, on which this calculator is almost entirely based.  
 * [NetVoid, who preserved the Gematro repo and secured the database](https://github.com/CyphersNews/cyphersnews.github.io)
-* [Alektryon, who contributed key cyphers and configurations](https://github.com/Alektryon)
+* [Alektryon, who contributed many cyphers, configurations, and reviews.](https://github.com/Alektryon)
