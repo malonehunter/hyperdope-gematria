@@ -41,7 +41,7 @@ To learn more about how to use Hyperdope Gematria see the Quickstart Guide in th
 
 This repo may be cloned as-is to your **web server** for self-hosting your own fully-featured gematira calulator with integrated database matching.
 
-To add more words or phrases to the matching database append them as new lines to the db.txt.
+To add more words or phrases to the matching database append them as new lines to the db.txt.  To autoload a different properly formatted .txt file you can change the reference in the AUTO LOAD DATABASE (DB) section at the bottom of index.html.s
 
 > NOTE: You must run this app from a web server for the word matching database to autoload due to the way browsers handle local file security.  Please see [this CORS error article](https://stackoverflow.com/questions/58879729/access-to-xmlhttprequest-at-file-sample-txt-from-origin-null-blocked-by-c) for more information.  A quick way to run db matching offline locally is to open the project folder in VS Code and launch it with the Live Server extension.  
 

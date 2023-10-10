@@ -97,17 +97,21 @@ $(window).load(function(){
 <script src="calc/coderain.js"></script>
 <script src="lib/html2canvas.min.js"></script>
 
-<!-- AUTO LOAD DATABASE (DB) -->
-<!-- To change the word matching database, reference a differnt file in the script below or append lined to db.txt -->
-
+<!-- Initialzie the calculator.  This needs to run before loading a database or theme. -->
 <script>
 	initCalc(true);
+</script>
+
+<!-- AUTO LOAD DATABASE (DB) -->
+<!-- To change the word matching database reference a different file in the script below or append lines to db.txt -->
+
+<script>
 	var database = loadFile('db.txt');
 	importFileAction(database, true);
 </script>
 
 <!-- AUTO LOAD THEME -->
-<!-- To change the theme, uncomment the script below -->
+<!-- To change the theme uncomment the script below -->
 
 <!-- <script>
 	var theme = loadFile('theme/white-interface.js');
