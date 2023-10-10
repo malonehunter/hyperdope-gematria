@@ -81,8 +81,8 @@ function importFileAction(file, hasLocalFile) {
 	
 		// detect cipher.js, load user ciphers
 		if (uCiph[0] == "// ciphers.js") {
-			// optShowExtraCiphers = false // clear "Show Extra Ciphers" option
-			// document.getElementById('chkbox_SEC').checked = false
+			optShowExtraCiphers = false // clear "Show Extra Ciphers" option
+			document.getElementById('chkbox_SEC').checked = false
 
 			if (precalcDBLoaded) { // return if precalculated database is loaded
 				displayCalcNotification("Cipher import is disabled for CSV Databases!", 3000)
@@ -103,11 +103,8 @@ function importFileAction(file, hasLocalFile) {
 				cipherList.push(eval("new cipher("+ciph[n].slice(1,-1)+")")) // remove parethesis, evaluate string as javascript code
 			}
 			document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
-			if(hasLocalFile){
-				// initCalc() // reinit.  This seems to add duplicate menu options when loading a theme and so this call has been disabled.
-			} else {
-				initCalc() // reinit.
-			}
+			
+			initCalc() // reinit.
 			
 			updateTables() // update tables
 			updateInterfaceColor(true) // update interface color (first run)

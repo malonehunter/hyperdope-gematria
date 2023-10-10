@@ -29,7 +29,9 @@ $(window).load(function(){
 
 </head>
 
-<body onload="initCalc(true)">
+<body>
+<!-- initCalc() needs to run before the db loads to create menu properly-->
+<!-- <body onload="initCalc(true)"> --> 
 
 <div id="loader"></div>
 <canvas id="canv"></canvas>
@@ -95,6 +97,15 @@ $(window).load(function(){
 <script src="calc/coderain.js"></script>
 <script src="lib/html2canvas.min.js"></script>
 
+<!-- AUTO LOAD DATABASE (DB) -->
+<!-- To change the word matching database, reference a differnt file in the script below or append lined to db.txt -->
+
+<script>
+	initCalc(true);
+	var database = loadFile('db.txt');
+	importFileAction(database, true);
+</script>
+
 <!-- AUTO LOAD THEME -->
 <!-- To change the theme, uncomment the script below -->
 
@@ -102,13 +113,5 @@ $(window).load(function(){
 	var theme = loadFile('theme/white-interface.js');
 	importFileAction(theme, true);
 </script> -->
-
-<!-- AUTO LOAD DATABASE (DB) -->
-<!-- To change the word matching database, reference a differnt file in the script below or append lined to db.txt -->
-
-<script>
-	var database = loadFile('db.txt');
-	importFileAction(database, true);
-</script>
 
 </body>
