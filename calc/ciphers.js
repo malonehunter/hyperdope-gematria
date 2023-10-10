@@ -1,5 +1,4 @@
 // ciphers.js
-// IMPORTANT NOTE: This file is bypassed when automatically loading a theme.  Edit default-interface.js in the theme folder instead.
 
 /*
 new cipher(
@@ -14,43 +13,6 @@ new cipher(
 )
 */
 
-calcOptions = [
-	"optNumCalcMethod = 1",
-	"optFiltCrossCipherMatch = true",
-	"optFiltSameCipherMatch = false",
-	"optShowOnlyMatching = false",
-	"optNewPhrasesGoFirst = false",
-	"optShowExtraCiphers = true",
-	"optAllowPhraseComments = true",
-	"liveDatabaseMode = true",
-	"optLetterWordCount = true",
-	"optWordBreakdown = true",
-	"optCompactBreakdown = true",
-	"optShowCipherChart = true",
-	"optGradientCharts = false",
-	"optLoadUserHistCiphers = true",
-	"optMatrixCodeRain = true",
-	"interfaceHue = 222",
-	"interfaceSat = 2",
-	"interfaceLit = 0.6",
-	"fontHue = 200",
-	"fontSat = 1",
-	"fontLit = 0.9",
-	"coderainHue = 222",
-	"coderainSat = 0.4",
-	"coderainLit = 0.19",
-	"optPhraseLimit = 5",
-	"dbPageItems = 15",
-	"dbScrollItems = 1",
-	"optForceTwoColumnLayout = false",
-	"optColoredCiphers = true",
-	"optGemSubstitutionMode = true",
-	"optGemMultCharPos = false",
-	"optGemMultCharPosReverse = false",
-	"encDefAlphArr = 'abcdefghijklmnopqrstuvwxyz'",
-	"encDefVowArr = 'aeiouy'",
-	"encDefExcLetArr = 'qzjx'"
-]
 cipherList = [
 	new cipher(
 		"Standard",

@@ -53,9 +53,7 @@ If you are not interested in using this tool offline or self-hosting and just wa
 
 There are 10 themes packaged with Hyperdope Gematria: black, blue, green, green alt, red charcoal, teal, white, and old book (normal, bright, and dim).
 
-The blue theme is set to default and has been copied into theme/default-interface.js.  To change the theme, rename default-interface.js to something like default-interface-backup.js, make a copy of your desired theme and rename that file to default-interface.js.
-
-> NOTE: The selected theme is the primary configuration file for the calculator, replacing ciphers.js.  If you want to change the cypher list or any of the default options you must edit the theme file.
+To enable a theme, uncomment the 'AUTO LOAD THEME' script at the bottom of index.html and change the reference to any of the files in the /theme folder.
 
 
 ## Contributing

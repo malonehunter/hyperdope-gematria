@@ -264,6 +264,17 @@ $(document).ready(function(){
 // ==================================================================
 // export.js
 
+function loadFile(filePath) {
+	var result = null;
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.open("GET", filePath, false);
+	xmlhttp.send();
+	if (xmlhttp.status==200) {
+	  result = xmlhttp.responseText;
+	}
+	return result;
+  }
+
 $(document).ready(function(){
 
 	$("body").on("click", "#btn-print-cipher-png", function () { // for future elements
@@ -330,24 +341,9 @@ $(document).ready(function(){
 		openImageWindow(".numPropTooltip", fileName, optImageScale);
 	});
 
-	function loadFile(filePath) {
-		var result = null;
-		var xmlhttp = new XMLHttpRequest();
-		xmlhttp.open("GET", filePath, false);
-		xmlhttp.send();
-		if (xmlhttp.status==200) {
-		  result = xmlhttp.responseText;
-		}
-		return result;
-	  }
-
-	  //Autoload DB
-	  var file = loadFile('db.txt');
-	  importFileAction(file, true);
-
-	  //Autoload Theme
-	  var file = loadFile('theme/default-interface.js');
-	  importFileAction(file, true);
+	//   //Autoload DB function has moved to index.html for easy editing
+	//   var file = loadFile('db.txt');
+	//   importFileAction(file, true);
 
 	$("body").on("change", "#importFileDummy", function(){
 		var file = document.querySelector("#importFileDummy").files[0];

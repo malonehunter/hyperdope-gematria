@@ -22,7 +22,7 @@ var dateCalcMenuOpened = false // date calculator menu state
 var encodingMenuOpened = false // encoding menu state
 
 var enabledCiphCount = 0 // number of enabled ciphers
-var optShowExtraCiphers = false // enable extra ciphers
+var optShowExtraCiphers = true // enable extra ciphers
 
 // Cipher colors
 var origColors = [] // preserve original cipher colors

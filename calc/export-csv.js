@@ -103,7 +103,12 @@ function importFileAction(file, hasLocalFile) {
 				cipherList.push(eval("new cipher("+ciph[n].slice(1,-1)+")")) // remove parethesis, evaluate string as javascript code
 			}
 			document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
-			initCalc() // reinit
+			if(hasLocalFile){
+				// initCalc() // reinit.  This seems to add duplicate menu options when loading a theme and so this call has been disabled.
+			} else {
+				initCalc() // reinit.
+			}
+			
 			updateTables() // update tables
 			updateInterfaceColor(true) // update interface color (first run)
 			if (userDBlive.length !== 0) { // restore controls if live database is loaded

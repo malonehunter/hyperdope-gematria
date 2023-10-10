@@ -30,7 +30,7 @@ $(window).load(function(){
 </head>
 
 <!-- The initialization below is duplicative if autoloading a theme. -->
-<!-- <body onload="initCalc(true)"> -->
+<body onload="initCalc(true)">
 
 <div id="loader"></div>
 <canvas id="canv"></canvas>
@@ -58,7 +58,7 @@ $(window).load(function(){
 		<div id="inputArea">
 		  <input id="queryDBbtn" class="hideValue" type="button" onclick="queryDatabase()" value="Query">
 		  <input id="phraseBox" autofocus type="text" spellcheck="false" autocomplete="off" oninput="updateEnabledCipherTable(); updateWordBreakdown(breakCipher,false,false);" onkeydown="phraseBoxKeypress(event.keyCode)" ondrop="dropHandler(event)" ondragover="dragOverHandler(event)">
-		  <input id="enterPhraseBtn" class="hideValue" type="button" onclick="phraseBoxKeypress(13);document.getElementById('phraseBox').focus()" value="&#x270E;">
+		  <input id="enterPhraseBtn" type="button" onclick="phraseBoxKeypress(13);document.getElementById('phraseBox').focus()" value="&#x270E;">
 		  <input id="highlightBox" type="text" spellcheck="false" autocomplete="off"><span id="clearFilterButton"></span>
 		</div>
 
@@ -95,5 +95,21 @@ $(window).load(function(){
 
 <script src="calc/coderain.js"></script>
 <script src="lib/html2canvas.min.js"></script>
+
+<!-- AUTO LOAD THEME -->
+<!-- To change the theme, uncomment the script below -->
+
+<!-- <script>
+	var theme = loadFile('theme/white-interface.js');
+	importFileAction(theme, true);
+</script> -->
+
+<!-- AUTO LOAD DATABASE (DB) -->
+<!-- To change the word matching database, reference a differnt file in the script below or append lined to db.txt -->
+
+<script>
+	var database = loadFile('db.txt');
+	importFileAction(database, true);
+</script>
 
 </body>
