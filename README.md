@@ -84,5 +84,6 @@ Project Link: [Hyperdope Gematria](https://github.com/malonehunter/hyperdope-gem
 ## Acknowledgments
 
 - Special thanks to Saun-Virroco, the creator of Gematro, on which this calculator is almost entirely based.
-- [NetVoid, who preserved the Gematro repo and secured the database](https://github.com/CyphersNews/cyphersnews.github.io)
+- [NetVoid, who preserved the Gematro repo and secured the database](https://cyphers.news/)
 - [Alektryon, who contributed many cyphers, configurations, and reviews.](https://github.com/Alektryon)
+- [NetVoid again, for helping tremendously with the database cleanup for v2! Thank you also for the motivation to press on.](https://cyphers.news/)

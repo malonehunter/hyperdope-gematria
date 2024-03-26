@@ -219,6 +219,16 @@ a:active {
   border-bottom: 0px;
 }
 
+@media (max-width: 911px) {
+  /* mobile */
+  #calcMain #mainLogo {
+    display: none;
+  }
+  #calcMain #calcLogo {
+    padding-top: 15px;
+  }
+}
+
 #loader {
   /* fade in on page load*/
   z-index: 101;
