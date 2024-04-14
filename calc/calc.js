@@ -257,7 +257,7 @@ function createCiphersMenu() {
   var o = document.getElementById("calcOptionsPanel").innerHTML;
 
   o += '<div class="dropdown">';
-  o += '<button class="dropbtn">Ciphers</button>';
+  o += '<button class="dropbtn">Cyphers</button>';
   o += '<div class="dropdown-content" style="width: 380px;">';
 
   o += "<div><center>";
