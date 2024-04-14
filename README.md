@@ -1,6 +1,6 @@
-## Hyper Calc
+## Hyperdope Gematria Cypher Calculator
 
-## ![Hyper Calc](res/preview.png)
+## ![Hyperdope Gematria Cypher Calculator](res/preview.png)
 
 > NOTE: Use a desktop Chromium based browser for best experience
 
@@ -8,11 +8,11 @@
 
 Try it live at https://calc.hyperdope.com
 
-The Hyper Calc project values these principles:
+The Hyperdope Cypher Calculator project values these principles:
 
 <ul>
 <li>Accessible and relevant word and phrase matching</li>
-<li>Favor inclusion of well-defined cyphers useful to the community</li>
+<li>Inclusion of well-defined cyphers useful to the community</li>
 <li>Free and open source</li>
 </ul>
 
@@ -35,11 +35,11 @@ The Hyper Calc project values these principles:
 
 ## Getting Started
 
-To learn more about how to use Hyper Calc see the Quickstart Guide in the app under the About menu.
+To learn more about how to use the Cypher Calculator, see the Quickstart Guide in the app under the About menu.
 
 This repo may be cloned as-is to your **web server** for self-hosting your own fully-featured gematira calulator with integrated database matching.
 
-To add more words or phrases to the matching database append them as new lines to the db.txt. To autoload a different properly formatted .txt file you can change the reference in the AUTO LOAD DATABASE (DB) section at the bottom of index.html.
+To add more words or phrases to the matching database append them as new lines to the db.txt. Or, to autoload a different properly formatted .txt file, change the reference in the AUTO LOAD DATABASE (DB) section at the bottom of index.html.
 
 > NOTE: You must run this app from a web server for the word matching database to autoload due to the way browsers handle local file security. Please see [this CORS error article](https://stackoverflow.com/questions/58879729/access-to-xmlhttprequest-at-file-sample-txt-from-origin-null-blocked-by-c) for more information. A quick way to run db matching offline locally is to open the project folder in VS Code and launch it with the Live Server extension.
 
@@ -49,7 +49,7 @@ If you are not interested in using this tool offline or self-hosting and just wa
 
 ### Changing the Theme
 
-There are 10 themes packaged with Hyper Calc: black, blue, green, green alt, red charcoal, teal, white, and old book (normal, bright, and dim).
+There are 10 themes packaged with the cypher calculator: black, blue, green, green alt, red charcoal, teal, white, and old book (normal, bright, and dim).
 
 To enable a theme, uncomment the 'AUTO LOAD THEME' script at the bottom of index.html and change the reference to any of the files in the /theme folder.
 
@@ -77,7 +77,7 @@ Distributed under the GNU General Public License v2.0. See `LICENSE` for more in
 
 Hyperdope Official - [@LNHyper on X](https://twitter.com/lnhyper) - hyperdopeofficial@protonmail.com
 
-Project Link: [Hyperdope Gematria](https://github.com/malonehunter/hyperdope-gematria)
+Project Link: [Hyperdope Gematria Cypher Calculator](https://github.com/malonehunter/hyperdope-gematria)
 
 <!-- ACKNOWLEDGMENTS -->
 
