@@ -1,90 +1,115 @@
-## Hyperdope Gematria Cypher Calculator
+# Cypher Calculator
 
-## ![Hyperdope Gematria Cypher Calculator](res/preview.png)
+A gematria cypher calculator with pre-computed instant matching, 145k+ curated word database, and full whitelabel support via `config.js`.
 
-> NOTE: Use a desktop Chromium based browser for best experience
+**[Try it live →](https://cypher.hyperdope.com)**
 
-## About The Project
+![Cypher Calculator](res/preview.png)
 
-Try it live at https://calc.hyperdope.com
+## Quick Start
 
-The Hyperdope Cypher Calculator project values these principles:
+```bash
+git clone https://github.com/malonehunter/hyperdope-gematria.git
+cd hyperdope-gematria
 
-<ul>
-<li>Accessible and relevant word and phrase matching</li>
-<li>Inclusion of well-defined cyphers useful to the community</li>
-<li>Free and open source</li>
-</ul>
+# Create your config (gitignored — won't be overwritten by updates)
+cp config.default.js config.js
+# Edit config.js — change siteName, colors, links, credits, etc.
 
-### Features:
+# Serve locally (web server required for database loading)
+python3 -m http.server 8000
+# Open http://localhost:8000
+```
 
-<ul>
-<li>150k+ entry Word database for instant phrase matching</li>
-<li>10 calculator skins included</li>
-<li>Virtual Keyboard</li>
-<li>Configurable image scaling</li>
-<li>History table editing</li>
-<li>Dynamic highlighter with filtering</li>
-<li>Support for characters with diacritical marks</li>
-<li>History export/import (CSV format)</li>
-<li>Fully customizable cyphers (Unicode)</li>
-<li>Color controls</li>
-<li>Screenshot tools</li>
-<li>Quickstart guide</li>
-</ul>
+> **Note:** Must run from a web server (not `file://`) due to browser CORS restrictions. VS Code Live Server extension also works.
 
-## Getting Started
+## Customization
 
-To learn more about how to use the Cypher Calculator, see the Quickstart Guide in the app under the About menu.
+All branding lives in `config.js`. Copy `config.default.js` to `config.js` and edit:
 
-This repo may be cloned as-is to your **web server** for self-hosting your own fully-featured gematira calulator with integrated database matching.
+```javascript
+var CALC_CONFIG = {
+  siteName: "My Calculator",               // logo text
+  siteTitle: "My Calculator — Gematria",   // browser tab title
+  logoColor: "hsl(148, 60%, 45%)",         // green like the code rain
+  logoHoverMatrix: true,                   // matrix font hover on logo letters
+  aboutLinks: [
+    { text: "My Site", url: "https://example.com" },
+  ],
+  credits: [
+    { name: "Your Name", role: "Fork maintainer" },
+  ],
+  // Custom cipher category groupings
+  customCategories: [
+    { name: "CCRU", ciphers: ["Alphanumeric Qabbala", "Synx", "Keypad"] },
+  ],
+  // See config.default.js for all options
+};
+```
 
-To add more words or phrases to the matching database append them as new lines to the db.txt. Or, to autoload a different properly formatted .txt file, change the reference in the AUTO LOAD DATABASE (DB) section at the bottom of index.html.
+`config.js` is in `.gitignore` — your customizations survive `git pull`.
 
-> NOTE: You must run this app from a web server for the word matching database to autoload due to the way browsers handle local file security. Please see [this CORS error article](https://stackoverflow.com/questions/58879729/access-to-xmlhttprequest-at-file-sample-txt-from-origin-null-blocked-by-c) for more information. A quick way to run db matching offline locally is to open the project folder in VS Code and launch it with the Live Server extension.
+## Updating
 
-If you do not need the auto loading db feature simply download the repo and open index.html.
+```bash
+git pull origin master
+# Your config.js is safe (gitignored)
+# db.txt updates improve matches automatically
+```
 
-If you are not interested in using this tool offline or self-hosting and just want to use the tool with the full word matching experience, navigate the project's [official hosted version](https://calc.hyperdope.com).
+## Database
 
-### Changing the Theme
+**145,821 curated entries** — cleaned and enriched from the original 153k user-search database.
 
-There are 10 themes packaged with the cypher calculator: black, blue, green, green alt, red charcoal, teal, white, and old book (normal, bright, and dim).
+- **Removed:** 13,317 junk entries (spam, gibberish, personal rants, serial spammers)
+- **Added:** 8,536 terms across 17 research categories (occult, theology, 9/11, gematria, psyop, cosmology, bitcoin, AI, coronavirus, world affairs, economics, health, intelligence, history, politics, civil liberties, free speech)
 
-To enable a theme, uncomment the 'AUTO LOAD THEME' script at the bottom of index.html and change the reference to any of the files in the /theme folder.
+### Pre-computed Mode
 
-## Contributing
+For instant matching (~100ms vs 2-5s), generate `db.json` with all 69 cipher values pre-calculated per entry. The calculator tries `db.json` first, falls back to `db.txt`. Set `databaseMode` in config.js.
 
-Any contributions you make are **greatly appreciated**. Please report any issues or bugs. Errors in the cyphers will be fixed with highest priority.
+### Adding Entries
 
-If you have a suggestion that would improve the tool, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
+Append phrases as new lines to `db.txt`. File must start with `CREATE_GEMATRO_DB`.
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## Features
 
-<!-- LICENSE -->
+- 85 ciphers (69 English + Hebrew, Greek, Arabic, Russian)
+- Pre-computed instant matching via db.json
+- Auto-match on Enter (configurable toggle)
+- Escape closes modal / clears filter
+- Mobile optimized (keyboard dismisses, touch minimize)
+- 10 calculator themes
+- Custom cipher categories via config
+- Matrix font hover effect
+- History table with highlighting and export
+- Date calculator, word breakdown, screenshots
+- Drag & drop file import
 
-## License
+## File Structure
 
-Distributed under the GNU General Public License v2.0. See `LICENSE` for more information.
-
-<!-- CONTACT -->
-
-## Contact
-
-Hyperdope Official - [@LNHyper on X](https://twitter.com/lnhyper) - hyperdopeofficial@protonmail.com
-
-Project Link: [Hyperdope Gematria Cypher Calculator](https://github.com/malonehunter/hyperdope-gematria)
-
-<!-- ACKNOWLEDGMENTS -->
+```
+├── index.html          # Main page
+├── config.js           # Your config (gitignored)
+├── config.default.js   # Template — copy to config.js
+├── db.txt              # 145k word matching database
+├── calc/               # Calculator JS + CSS
+├── theme/              # 10 color themes
+├── font/               # Matrix, Montserrat, Roboto Mono
+└── res/                # Favicon, logos, assets
+```
 
 ## Acknowledgments
 
-- Special thanks to Saun-Virroco, the creator of Gematro, on which this calculator is almost entirely based.
-- [NetVoid, who preserved the Gematro repo and secured the database](https://cyphers.news/)
-- [Alektryon, who contributed many cyphers, configurations, and reviews.](https://github.com/Alektryon)
-- [NetVoid again, for helping tremendously with the database cleanup for v2! Thank you also for the motivation to press on.](https://cyphers.news/)
-<!-- MacBook SSH test Sat Nov  8 06:54:59 EST 2025 -->
+- **Saun-Virroco** — Original Gematro creator
+- **[NetVoid](https://cyphers.news/)** — Preserved codebase & database, v2 cleanup help
+- **[Alektryon](https://github.com/Alektryon)** — Cipher contributions & reviews
+- **[Hyperdope](https://hyperdope.com)** — Database overhaul, v2 architecture
+
+## Contact
+
+[@LNHyper on X](https://twitter.com/lnhyper) · hyperdopeofficial@protonmail.com
+
+## License
+
+MIT
