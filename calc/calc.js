@@ -33,7 +33,7 @@ var sHistory = []; // user search history (history table)
 var optPhraseLimit = 5; // word limit to enter input as separate phrases, "End" key
 
 var compactHistoryTable = false; // compact mode - vertical cipher names
-var optNewPhrasesGoFirst = false; // new phrases are inserted at the beginning of history table
+var optNewPhrasesGoFirst = (typeof CALC_CONFIG !== 'undefined' && CALC_CONFIG.newPhrasesOnTop !== undefined) ? CALC_CONFIG.newPhrasesOnTop : true;
 var optCompactCiphCount = 8; // compact mode threshold
 var optLoadUserHistCiphers = true; // load ciphers when CSV file is imported
 
@@ -58,7 +58,7 @@ var alphaHlt = 0.15; // opacity for values that do not match - change value here
 var optAllowPhraseComments = true; // allow phrase comments, text inside [...] is not evaluated
 var liveDatabaseMode = true; // live database mode
 
-var dbPageItems = 15; // number of phrases in one section
+var dbPageItems = (typeof CALC_CONFIG !== 'undefined' && CALC_CONFIG.resultsPerPage) ? CALC_CONFIG.resultsPerPage : 12;
 var dbScrollItems = 1; // used for scrolling
 
 var optGradientCharts = true; // gradient fill for breakdown/cipher charts
@@ -146,7 +146,8 @@ function initCalc(defSet = false) {
   createCalcMenus();
   enableDefaultCiphers();
   saveCalcSettingsLocalStorage(true); // save default settings
-  showWelcomeMessage("hyper calc");
+  var welcomeMsg = (typeof CALC_CONFIG !== 'undefined' && CALC_CONFIG.welcomeMessage) ? CALC_CONFIG.welcomeMessage : "loading cypher database...";
+  showWelcomeMessage(welcomeMsg);
 }
 
 var welcomeShown = false;
@@ -177,7 +178,7 @@ function configureCalcInterface(initRun = false) {
     optCompactCiphCount = 4;
     chLimit = 17; // character limit, used to switch to a long breakdown style
     maxRowWidth = 20; // one row character limit (long breakdown)
-    $("#queryDBbtn").val("Q"); // change Query button label
+    $("#queryDBbtn").val("\uD83D\uDD2E"); // 🔮 crystal ball on mobile
   } else {
     // desktop
     encodingMenuColumns = 4;
@@ -186,7 +187,7 @@ function configureCalcInterface(initRun = false) {
     optCompactCiphCount = 8;
     chLimit = 30; // character limit, used to switch to a long breakdown style
     maxRowWidth = 36; // one row character limit (long breakdown)
-    $("#queryDBbtn").val("Query"); // change Query button label
+    $("#queryDBbtn").val("\uD83D\uDD2E Query"); // 🔮 Query on desktop
   }
   if (optForceTwoColumnLayout && $(window).width() > compactViewportWidth) {
     // override layout for desktop
@@ -295,7 +296,71 @@ function createCiphersMenu() {
   displayCipherCatDetailed(cCat[0]); // open first available category
 }
 
+// Auto-match state — read from config, fallback to desktop=on mobile=off
+var autoMatchEnabled = (typeof CALC_CONFIG !== 'undefined')
+  ? (navigator.maxTouchPoints > 0 ? CALC_CONFIG.autoMatchMobile : CALC_CONFIG.autoMatchDesktop)
+  : (navigator.maxTouchPoints <= 1);
+
+// Add phrase to list only (↵ button) — update modal only if already open and maximized
+function addPhraseOnly() {
+  var phr = sVal();
+  if (phr == "") return;
+  // If modal is open AND not minimized, refresh it with new query
+  var qa = document.getElementById("queryArea");
+  if (qa && !$("#queryArea").hasClass("minimizeQuery")) {
+    queryDatabase();
+  }
+  // Add to history
+  if (optNewPhrasesGoFirst) {
+    addPhraseToHistoryUnshift(phr, true);
+  } else {
+    addPhraseToHistory(phr, true);
+  }
+  document.getElementById("phraseBox").value = "";
+  document.getElementById("phraseBox").focus();
+}
+
+function toggleAutoMatch() {
+  autoMatchEnabled = !autoMatchEnabled;
+  var btn = document.getElementById("autoMatchBtn");
+  if (autoMatchEnabled) {
+    btn.classList.remove("matchOff");
+    btn.title = "Auto-match ON — click to disable";
+  } else {
+    btn.classList.add("matchOff");
+    btn.title = "Auto-match OFF — click to enable";
+  }
+  document.getElementById("phraseBox").focus();
+}
+
 $(document).ready(function () {
+  // Global Escape key handler
+  $(document).on("keydown", function(e) {
+    if (e.keyCode === 27 || e.key === "Escape") {
+      // If highlight filter has content, clear it first
+      var hBox = document.getElementById("highlightBox");
+      if (hBox && hBox.value !== "") {
+        if (typeof userOpenCiphers !== 'undefined' && userOpenCiphers.length > 0) {
+          removeActiveFilter(); // Enter was pressed, do full restore
+        } else {
+          // Just typed numbers without Enter — clear highlights
+          $("#clearFilterButton").html("");
+          hBox.value = "";
+          freq = [];
+          autoHistoryTableLayout();
+          updateHistoryTable();
+        }
+        document.getElementById("phraseBox").focus();
+        return;
+      }
+      // Otherwise close matches modal
+      if (document.getElementById("queryArea") !== null) {
+        clearDatabaseQueryTable();
+        document.getElementById("phraseBox").focus();
+      }
+    }
+  });
+
   $("body").on("mouseover", ".ciphCatButton", function () {
     // mouse over cipher category button
     displayCipherCatDetailed($(this).val());
@@ -319,9 +384,22 @@ function displayCipherCatDetailed(curCat) {
       '&quot;)">';
     o += '<div style="padding: 0.25em;"></div>';
   }
+  // Check if this is a custom config category
+  var customCipherNames = null;
+  if (typeof CALC_CONFIG !== 'undefined' && CALC_CONFIG.customCategories) {
+    for (var cc = 0; cc < CALC_CONFIG.customCategories.length; cc++) {
+      if (CALC_CONFIG.customCategories[cc].name === curCat) {
+        customCipherNames = CALC_CONFIG.customCategories[cc].ciphers;
+        break;
+      }
+    }
+  }
   o += '<table class="cipherCatDetails"><tbody>';
   for (i = 0; i < cipherList.length; i++) {
-    if (cipherList[i].cipherCategory == curCat) {
+    var inCategory = customCipherNames
+      ? (customCipherNames.indexOf(cipherList[i].cipherName) !== -1)
+      : (cipherList[i].cipherCategory == curCat);
+    if (inCategory) {
       if (cipherList[i].enabled) {
         chk = " checked";
       } else {
@@ -346,33 +424,49 @@ function displayCipherCatDetailed(curCat) {
 // =========================== About Menu ===========================
 
 function createAboutMenu() {
-  // create menu with all cipher catergories
   var o = document.getElementById("calcOptionsPanel").innerHTML;
+  var c = (typeof CALC_CONFIG !== 'undefined') ? CALC_CONFIG : {};
 
   o += '<div class="dropdown">';
   o += '<button class="dropbtn">About</button>';
   o += '<div class="dropdown-content dropdown-about">';
 
-  // o += '<center><div class="gematroLogo">'+gematroSvgLogo()+'</div>'
-  // o += '</center>'
-  // o += '<div style="margin: 1em;"></div>'
-  // o += '<input class="intBtn" type="button" value="Join Discord Server" onclick="gotoDiscordServer()">'
-  // o += '<div style="margin: 0.5em;"></div>'
-  o +=
-    '<input class="intBtn" type="button" value="GitHub Repository" onclick="gotoGitHubRepo()">';
-  o += '<div style="margin: 0.5em;"></div>';
-  o +=
-    '<input class="intBtn" type="button" value="Quickstart Guide" onclick="displayQuickstartGuide()">';
-  // o += '<div style="margin: 0.5em;"></div>'
-  // o += '<input class="intBtn" type="button" value="Contacts" onclick="displayContactInfo()">'
+  // About links from config
+  if (c.aboutLinks && c.aboutLinks.length > 0) {
+    for (var i = 0; i < c.aboutLinks.length; i++) {
+      var link = c.aboutLinks[i];
+      o += '<input class="intBtn" type="button" value="' + link.text + '" onclick="window.open(\'' + link.url + '\', \'_blank\')">';
+      o += '<div style="margin: 0.5em;"></div>';
+    }
+  } else {
+    o += '<input class="intBtn" type="button" value="GitHub Repository" onclick="gotoGitHubRepo()">';
+    o += '<div style="margin: 0.5em;"></div>';
+  }
+
+  o += '<input class="intBtn" type="button" value="Quickstart Guide" onclick="displayQuickstartGuide()">';
+
+  // Credits from config
+  if (c.credits && c.credits.length > 0) {
+    o += '<div style="margin: 0.8em;"></div>';
+    o += '<div style="font-size: 80%; color: var(--font-white-2); padding: 0 0.5em;">';
+    for (var j = 0; j < c.credits.length; j++) {
+      var cr = c.credits[j];
+      if (cr.url) {
+        o += '<div style="margin: 0.3em 0;"><a href="' + cr.url + '" target="_blank" style="color: var(--font-white-1); text-decoration: none;">' + cr.name + '</a> — ' + cr.role + '</div>';
+      } else {
+        o += '<div style="margin: 0.3em 0;">' + cr.name + ' — ' + cr.role + '</div>';
+      }
+    }
+    o += '</div>';
+  }
 
   o += "</div></div>";
-
   document.getElementById("calcOptionsPanel").innerHTML = o;
 }
 
 function gotoGitHubRepo() {
-  window.open("https://github.com/malonehunter/hyperdope-gematria", "_blank");
+  var url = (typeof CALC_CONFIG !== 'undefined' && CALC_CONFIG.githubUrl) ? CALC_CONFIG.githubUrl : "https://github.com/malonehunter/hyperdope-gematria";
+  window.open(url, "_blank");
 }
 
 function gotoDiscordServer() {
@@ -1408,6 +1502,13 @@ function initCiphers(updDefCiph = true) {
     if (cipherList[i].enabled && updDefCiph)
       defaultCipherArray.push(cipherList[i].cipherName); // update default ciphers
   }
+  // Add custom categories from config
+  if (typeof CALC_CONFIG !== 'undefined' && CALC_CONFIG.customCategories) {
+    for (var cc = 0; cc < CALC_CONFIG.customCategories.length; cc++) {
+      var catName = CALC_CONFIG.customCategories[cc].name;
+      if (cCat.indexOf(catName) == -1) cCat.push(catName);
+    }
+  }
   if (defaultCipherArraySaved.length == 0)
     defaultCipherArraySaved = [...defaultCipherArray]; // copy of initial default ciphers
   initColorArrays();
@@ -1486,15 +1587,27 @@ function disableAllCiphers() {
 
 function toggleCipherCategory(ciph_cat) {
   prevCiphIndex = -1; // reset cipher selection
+  // Check if custom config category
+  var customNames = null;
+  if (typeof CALC_CONFIG !== 'undefined' && CALC_CONFIG.customCategories) {
+    for (var cc = 0; cc < CALC_CONFIG.customCategories.length; cc++) {
+      if (CALC_CONFIG.customCategories[cc].name === ciph_cat) {
+        customNames = CALC_CONFIG.customCategories[cc].ciphers;
+        break;
+      }
+    }
+  }
+  function _inCat(ci) {
+    return customNames ? (customNames.indexOf(ci.cipherName) !== -1) : (ci.cipherCategory == ciph_cat);
+  }
   var on_first = false;
   for (i = 0; i < cipherList.length; i++) {
-    if (cipherList[i].cipherCategory == ciph_cat && !cipherList[i].enabled)
-      on_first = true; // if one cipher is disabled
+    if (_inCat(cipherList[i]) && !cipherList[i].enabled)
+      on_first = true;
   }
   var cur_chkbox;
   for (i = 0; i < cipherList.length; i++) {
-    //console.log(cipherList[i].cipherCategory)
-    if (cipherList[i].cipherCategory == ciph_cat) {
+    if (_inCat(cipherList[i])) {
       cur_chkbox = document.getElementById("cipher_chkbox" + i);
       if (on_first) {
         // if one cipher is disabled, first enable all
@@ -1824,6 +1937,11 @@ function phraseBoxKeypress(e) {
     e // keypress event
   ) {
     case 13: // Enter, Go (Android)
+      if (phr == "") break; // skip empty input
+      // Auto-query on Enter if database is loaded and automatch is enabled
+      if ((userDB.length > 0 || userDBlive.length > 0) && autoMatchEnabled) {
+        queryDatabase(); // run match query BEFORE clearing input
+      }
       if (!optNewPhrasesGoFirst) {
         addPhraseToHistory(phr, true);
       } // enter as single phrase
@@ -1831,6 +1949,13 @@ function phraseBoxKeypress(e) {
         addPhraseToHistoryUnshift(phr, true);
       } // insert in the beginning
       pBox.value = ""; // clear textbox on Enter
+      // On mobile, blur input to dismiss keyboard so user can see results
+      if (navigator.maxTouchPoints > 0) pBox.blur();
+      break;
+    case 27: // Escape - close matches modal
+      if (document.getElementById("queryArea") !== null) {
+        clearDatabaseQueryTable();
+      }
       break;
     case 38: // Up Arrow
       if (sHistory.length > 0) {

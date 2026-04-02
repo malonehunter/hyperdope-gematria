@@ -52,7 +52,7 @@ function importFileAction(file, hasLocalFile) {
 		uCiph = userHist[0].split(";") // table header to array (user ciphers from CSV), semicolon separator
 
 		// detect database export mode
-		if (uCiph[0] == "CREATE_GEMATRO_DB") {
+		if (uCiph[0] == "CREATE_GEMATRO_DB" || uCiph[0] == "HYPER_CYPHERS") {
 			userHist.splice(0,1) // remove the first line
 			if (liveDatabaseMode == false) { // precompiled database mode
 				expCiphers = exportCiphersDB() // export enabled ciphers

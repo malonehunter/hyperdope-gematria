@@ -12,6 +12,18 @@ function queryDatabase() {
 		var o = '<div id="queryArea"></div>'
 		$(o).appendTo('body');
 	}
+	// Position modal below the enabled cipher table (the Ordinal/Reduction values box)
+	var ciphTable = document.getElementById("enabledCiphTable");
+	if (ciphTable && ciphTable.getBoundingClientRect().height > 0) {
+		var ciphBottom = ciphTable.getBoundingClientRect().bottom + window.scrollY;
+		document.getElementById("queryArea").style.top = (ciphBottom + 4) + "px";
+	} else {
+		var inputEl = document.getElementById("inputArea");
+		if (inputEl) {
+			var inputBottom = inputEl.getBoundingClientRect().bottom + window.scrollY;
+			document.getElementById("queryArea").style.top = (inputBottom + 4) + "px";
+		}
+	}
 	
 	mArr = [] // array with matching phrases from database
 	gemArr = [] // gematria of current phrase for enabled ciphers
@@ -71,7 +83,9 @@ function searchDBcrossCipher() { // populate "queryResult" array with matching p
 	var tmpArr = [] // one phrase with score and gematria
 	var tmpVal = 0 // current phrase value
 	var gemArrCiphUsed = [...gemArrCiph]
-	if (liveDatabaseMode == true) { // 0,1,2...
+	if (cipherOrder.length > 0 && !liveDatabaseMode) { // pre-computed mode
+		gemArrCiphUsed = getPrecomputedCipherPositions()
+	} else if (liveDatabaseMode == true) { // live mode: 0,1,2...
 		len = gemArrCiph.length
 		gemArrCiphUsed = []
 		for (n = 0; n < len; n++) {
@@ -98,8 +112,14 @@ function searchDBcrossCipher() { // populate "queryResult" array with matching p
 		}
 		if (tmpArr[0] > 0) queryResult.push(tmpArr) // if total score is more than zero, add phrase to array
 	}
-	queryResult.sort(function(a, b) { // sort by score (descending)
-		return b[0] - a[0]; // sort based on index 0 values ("freq" is array of arrays), (b-a) descending order, (a-b) ascending
+	// Sort by score descending, but pin exact phrase match to top
+	var searchPhrase = sVal().toLowerCase()
+	queryResult.sort(function(a, b) {
+		// Exact phrase match always first
+		var aExact = a[1].toLowerCase() === searchPhrase ? 1 : 0
+		var bExact = b[1].toLowerCase() === searchPhrase ? 1 : 0
+		if (aExact !== bExact) return bExact - aExact
+		return b[0] - a[0]; // then by score descending
 	});
 }
 
@@ -109,7 +129,9 @@ function searchDBsameCipher() { // populate "queryResult" array with matching ph
 	var tmpArr = [] // one phrase with score and gematria
 	var tmpVal = 0 // current phrase value
 	var gemArrCiphUsed = [...gemArrCiph]
-	if (liveDatabaseMode == true) { // 0,1,2...
+	if (cipherOrder.length > 0 && !liveDatabaseMode) { // pre-computed mode
+		gemArrCiphUsed = getPrecomputedCipherPositions()
+	} else if (liveDatabaseMode == true) { // live mode: 0,1,2...
 		len = gemArrCiph.length
 		gemArrCiphUsed = []
 		for (n = 0; n < len; n++) {
@@ -129,8 +151,13 @@ function searchDBsameCipher() { // populate "queryResult" array with matching ph
 		}
 		if (tmpArr[0] > 0) queryResult.push(tmpArr) // if total score is more than zero, add phrase to array
 	}
-	queryResult.sort(function(a, b) { // sort by score (descending)
-		return b[0] - a[0]; // sort based on index 0 values ("freq" is array of arrays), (b-a) descending order, (a-b) ascending
+	// Sort by score descending, but pin exact phrase match to top
+	var searchPhrase = sVal().toLowerCase()
+	queryResult.sort(function(a, b) {
+		var aExact = a[1].toLowerCase() === searchPhrase ? 1 : 0
+		var bExact = b[1].toLowerCase() === searchPhrase ? 1 : 0
+		if (aExact !== bExact) return bExact - aExact
+		return b[0] - a[0];
 	});
 }
 
@@ -183,8 +210,10 @@ function updateDatabaseQueryTable(stPos = 0, dItems, scrollBarEvent = false) { /
 		sliderMax = Math.floor(queryResult.length/dbPageItems)
 		if (queryResult.length % dbPageItems == 0) sliderMax -= 1 // if total is divisible, no pagination for last element
 		curSliderPos = Math.round(curPos/dbPageItems)
-		ms = '<span class="minimizeLabel">Click to minimize</span>'
-		ms += '<div id="queryMinBtn">_</div>' // minimize button
+		ms = '<div id="queryHeaderBar" style="cursor:pointer;">'
+		ms += '<div id="queryCloseBtn" onclick="event.stopPropagation();clearDatabaseQueryTable()" title="Close">&times;</div>'
+		ms += '<div id="queryMinBtn">_</div>'
+		ms += '</div>'
 		ms += '<input type="range" min="0" max="'+sliderMax+'" value="'+curSliderPos+'" class="qSlider" id="queryScrollbar">' // slider/scrollbar
 		ms += '<input id="querySearchInput" type="text" spellcheck="false" autocomplete="off" value="'+searchBarValue+'" placeholder="Find...">' // search bar
 		ms += '<table id="QueryTable" class="HistoryTable" data-startpos='+stPos+' data-dispitems='+dItems+'>'
@@ -237,7 +266,8 @@ function updateDatabaseQueryTable(stPos = 0, dItems, scrollBarEvent = false) { /
 		} else {
 			dispPhrase = (encodingMenuOpened) ? queryResult[x] : queryResult[x][1]
 		}
-		ms += '<tr><td class="hPQ" data-ind="'+x+'">' + dispPhrase + '</td>' // phrase at index 1
+		var fullPhrase = (encodingMenuOpened) ? queryResult[x] : queryResult[x][1]
+		ms += '<tr><td class="hPQ" data-ind="'+x+'" title="'+fullPhrase.replace(/"/g, '&quot;')+'">' + dispPhrase + '</td>' // phrase at index 1
 
 		valPos = 2 // reset position for new phrase
 		for (y = 0; y < gemArrCiph.length; y++) { // gemArrCiph contains indices of ciphers used for query
@@ -276,7 +306,8 @@ function updateDatabaseQueryTable(stPos = 0, dItems, scrollBarEvent = false) { /
 		document.getElementById("queryArea").innerHTML = ms
 	}
 	if (navigator.maxTouchPoints <= 1 && !scrollBarEvent) { // ignore scrollbar event
-		if (document.getElementById("queryPosInput") !== null) document.getElementById("queryPosInput").focus() // restore focus on desktop devices
+		// Return focus to main phrase box so user can immediately type next query
+		document.getElementById("phraseBox").focus()
 	}
 }
 
@@ -380,6 +411,47 @@ function unloadDatabase() {
 	displayCalcNotification("Database unloaded!", 1000)
 	return
 }
+
+// ============================ Pre-computed Database ============================
+
+var cipherOrder = [] // cipher names in order of db.json columns
+
+function loadPrecomputedDB(data) {
+	cipherOrder = data.cipher_order
+	userDB = data.data // already [phrase, v1, v2, ..., v69]
+	precalcDBLoaded = true
+	liveDatabaseMode = false
+	// DO NOT lock ciphers — all 69 values present in every row
+
+	$("#queryDBbtn").removeClass("hideValue")
+	$("#clearDBqueryBtn").removeClass("hideValue")
+	$("#unloadDBBtn").removeClass("hideValue")
+	$("#btn-export-db-query").removeClass("hideValue")
+	$("#liveDBOption").addClass("hideValue")
+	closeAllOpenedMenus()
+
+	console.log("Pre-computed Database loaded! (" + userDB.length + " entries, " + cipherOrder.length + " ciphers)")
+	var loadedMsg = (typeof CALC_CONFIG !== 'undefined' && CALC_CONFIG.loadedMessage)
+		? CALC_CONFIG.loadedMessage.replace("{count}", userDB.length.toLocaleString('en')).replace("{ciphers}", cipherOrder.length)
+		: userDB.length.toLocaleString('en') + " entries × " + cipherOrder.length + " cyphers ready";
+	displayCalcNotification(loadedMsg, 2500)
+}
+
+function getPrecomputedCipherPositions() {
+	// Map enabled cipher names to their column indices in db.json
+	// Returns 0-based indices into cipher_order (NOT +1 adjusted)
+	// because searchDBcrossCipher/sameCipher already add +1 when accessing userDB
+	var positions = []
+	for (var i = 0; i < cipherList.length; i++) {
+		if (cipherList[i].enabled) {
+			var pos = cipherOrder.indexOf(cipherList[i].cipherName)
+			if (pos > -1) positions.push(pos) // 0-based; search functions add +1
+		}
+	}
+	return positions
+}
+
+// ============================ Live Database ============================
 
 function calcLiveDatabase(arr) {
 	var i, n

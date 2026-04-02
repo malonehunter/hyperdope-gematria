@@ -284,14 +284,11 @@ body {
   fill: var(--font-white-2) !important;
 }
 .splitInterface {
+  text-align: center; /* maintain centering when modal is open */
 }
 @media (min-width: 911px) {
-  /* desktop */
+  /* desktop — modal overlays instead of pushing content */
   .splitInterface {
-    width: 70%;
-    position: absolute;
-    top: 0;
-    right: 0;
     overflow: auto;
     height: 100%;
   }
@@ -714,9 +711,9 @@ body {
   #phraseBox {
     width: 300px;
   }
-  #highlightBox {
-    width: none;
-    max-width: 100px;
+  #highlightBox,
+  #clearFilterButton {
+    display: none !important; /* hide filter input on mobile — gains space */
   }
 }
 @media (min-width: 911px) {
@@ -728,8 +725,11 @@ body {
     width: 500px;
   }
   #highlightBox {
-    width: 200px;
-    max-width: 200px;
+    width: 120px;
+    max-width: 120px;
+  }
+  #highlightBox::placeholder {
+    font-size: 75%;
   }
 }
 #phraseBox:focus,
@@ -835,6 +835,15 @@ body {
   text-align: right;
   padding: 0em 0.5em 0em 0.5em;
   font-size: 110%;
+  max-width: 150px; /* desktop: keep modal narrow */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+@media (max-width: 911px) {
+  .hPQ {
+    max-width: 300px; /* mobile: full-width overlay has room */
+  }
 }
 .mP,
 .mPQ {
@@ -995,13 +1004,17 @@ body {
   margin: 0em 0.3em;
   width: 75px;
 }
-#enterPhraseBtn {
+#enterPhraseBtn,
+#autoMatchBtn {
   background-color: var(--input-bg-accent);
   padding: 0em;
   margin: 0em 0em 0em 0.3em;
   min-width: 30px;
   max-width: 30px;
   color: var(--border-accent);
+}
+#autoMatchBtn.matchOff {
+  opacity: 0.35;
 }
 #calcNotification {
   position: absolute;
@@ -1024,6 +1037,7 @@ body {
 .intBtnResetDate:hover,
 #queryDBbtn:hover,
 #enterPhraseBtn:hover,
+#autoMatchBtn:hover,
 .queryPageBtn:hover {
   background-color: var(--btn-hover-accent);
 }
@@ -1034,6 +1048,7 @@ body {
 .intBtnResetDate:active,
 #queryDBbtn:active,
 #enterPhraseBtn:active,
+#autoMatchBtn:active,
 .queryPageBtn:active {
   background-color: var(--btn-active-accent);
 }
@@ -1550,18 +1565,25 @@ body {
   width: 30%;
   position: absolute;
   /* border-right: 1px solid var(--border-accent); */
-  top: 45px;
-  left: 100px;
+  top: 80px; /* fallback, overridden dynamically by queryDatabase() */
+  left: 5px;
   overflow: auto;
   max-height: 92%;
   border: 1px solid var(--border-accent);
-  /* background-color: var(--query-bg-accent); */
+  background-color: var(--menu-bg-accent);
   resize: horizontal;
+  z-index: 100;
 }
 @media (max-width: 911px) {
-  /* mobile */
+  /* mobile — center the modal */
   #queryArea {
-    left: 40px !important;
+    left: 2.5% !important;
+    width: 95% !important;
+    max-width: 480px;
+  }
+  #queryArea.minimizeQuery {
+    transform: translate(calc(-100% + 30px), 0) !important;
+    min-height: 60px;
   }
 }
 .queryPageBtn {
@@ -1588,6 +1610,28 @@ body {
 #queryMinBtn:hover {
   background-color: var(--btn-bg-accent);
 }
+#queryCloseBtn {
+  position: absolute;
+  width: 24px;
+  left: 0;
+  height: 24px;
+  text-align: center;
+  box-sizing: border-box;
+  color: var(--border-accent);
+  background: var(--hist-header-gradient);
+  border: 1px solid var(--border-accent);
+  border-bottom: 2px solid var(--border-accent);
+  cursor: pointer;
+  user-select: none;
+  font-size: 120%;
+  line-height: 20px;
+}
+#queryCloseBtn:hover {
+  background-color: var(--btn-bg-accent);
+}
+#queryCloseBtn:active {
+  background-color: var(--btn-hover-accent);
+}
 #queryMinBtn:active {
   background-color: var(--btn-hover-accent);
 }
@@ -1597,11 +1641,11 @@ body {
 }
 .qSlider {
   -webkit-appearance: none;
-  width: calc(100% - 24px);
+  width: calc(100% - 48px); /* 24px close btn left + 24px minimize btn right */
   height: 24px;
   background: var(--hist-header-gradient);
   outline: none;
-  margin: 0;
+  margin: 0 0 0 24px; /* push right of close button */
   border: 1px solid var(--border-accent);
   border-bottom: 2px solid var(--border-accent);
   display: block;
@@ -1658,12 +1702,13 @@ body {
 .minimizeQuery {
   resize: none !important;
   transition: 0.2s;
-  transform: translate(calc(-87% - 100px), 0);
+  transform: translate(calc(-100% + 30px), 0); /* slide left, leave 30px visible */
 }
 @media (max-width: 911px) {
   /* mobile */
   .minimizeQuery {
-    transform: translate(calc(-87% - 40px), 0) !important;
+    transform: translate(calc(-100% + 30px), 0) !important; /* same: leave 30px tab visible */
+    min-height: 60px; /* larger tap target when minimized */
   }
 }
 .minimizeLabel {

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <head>
-  <title>Cypher Calc</title>
+  <title>Cypher Calculator</title> <!-- updated by config.js -->
   <meta charset="utf-8" />
   <meta
     name="viewport"
@@ -11,15 +11,16 @@
   <!-- Android Web App - Add to Home Screen -->
   <link rel="manifest" href="manifest.json" />
 
-  <script src="lib/jquery.min.js"></script>
+  <script src="config.js?v=2"></script>
+  <script src="lib/jquery.min.js?v=2"></script>
   <!-- html2canvas v1.0.0-alpha.12 -->
 
-  <script src="calc/gematria.js"></script>
-  <script src="calc/calc.js"></script>
-  <script src="calc/init-variables.js"></script>
-  <script src="calc/ciphers.js"></script>
+  <script src="calc/gematria.js?v=2"></script>
+  <script src="calc/calc.js?v=2"></script>
+  <script src="calc/init-variables.js?v=2"></script>
+  <script src="calc/ciphers.js?v=2"></script>
 
-  <link rel="stylesheet" type="text/css" href="calc/styles.css" />
+  <link rel="stylesheet" type="text/css" href="calc/styles.css?v=2" />
 
   <script>
     window.onpaint = function () {
@@ -44,12 +45,28 @@
   <div id="calcMain">
     <center>
       <div id="calcLogo">
-        <!-- Text Logo -->
-        <div>Hyperdope Cypher Calculator</div>
-
-        <!-- Image Logo -->
-        <!-- <img src="res/hypercalc_transparent.png" height="50" /> -->
+        <div id="logoText"></div>
+        <style>
+          .logoLetter { transition: font-family 0.1s; display: inline-block; }
+          .logoLetter:hover { font-family: matrix-font, monospace; color: #00ffcc; }
+        </style>
       </div>
+      <script>
+        (function() {
+          var c = (typeof CALC_CONFIG !== 'undefined') ? CALC_CONFIG : {};
+          var name = c.siteName || "Cypher Calculator";
+          var color = c.logoColor || "#00ff41";
+          var glow = c.logoGlow || "";
+          var el = document.getElementById("logoText");
+          el.style.cssText = "color:"+color+";text-shadow:"+glow+";font-family:'Courier New',monospace;font-weight:bold;font-size:250%;letter-spacing:3px;cursor:default;";
+          if (c.logoHoverMatrix !== false) {
+            el.innerHTML = name.split("").map(function(ch){ return '<span class="logoLetter">'+ch+'</span>'; }).join("");
+          } else {
+            el.textContent = name;
+          }
+          document.title = c.siteTitle || name;
+        })();
+      </script>
     </center>
 
     <center>
@@ -60,6 +77,12 @@
       <div id="dateCalcMenuArea"></div>
 
       <div id="inputArea">
+        <span id="dbLoadIndicator" style="display:none;margin-right:6px;">
+          <svg width="22" height="22" viewBox="0 0 22 22" style="vertical-align:middle;animation:dbspin 1s linear infinite;">
+            <circle cx="11" cy="11" r="9" stroke="var(--font-color,#0ff)" stroke-width="2" fill="none" stroke-dasharray="40 20" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <style>@keyframes dbspin{to{transform:rotate(360deg)}}</style>
         <input
           id="queryDBbtn"
           class="hideValue"
@@ -74,21 +97,30 @@
           spellcheck="false"
           autocomplete="off"
           oninput="updateEnabledCipherTable(); updateWordBreakdown(breakCipher,false,false);"
-          onkeydown="phraseBoxKeypress(event.keyCode)"
+          onkeydown="if(event.key==='Enter'){phraseBoxKeypress(13)}else{phraseBoxKeypress(event.keyCode)}"
           ondrop="dropHandler(event)"
           ondragover="dragOverHandler(event)"
         />
         <input
           id="enterPhraseBtn"
           type="button"
-          onclick="phraseBoxKeypress(13);document.getElementById('phraseBox').focus()"
-          value="&#x270E;"
+          title="Add phrase to list"
+          onclick="addPhraseOnly()"
+          value="&#x21B5;"
+        /><input
+          id="autoMatchBtn"
+          class="hideValue"
+          type="button"
+          title="Auto-match ON — click to disable"
+          value="⚡"
+          onclick="toggleAutoMatch()"
         />
         <input
           id="highlightBox"
           type="text"
           spellcheck="false"
           autocomplete="off"
+          placeholder="highlight #s"
         /><span id="clearFilterButton"></span>
       </div>
 
@@ -107,23 +139,23 @@
 
   <span id="loadPanel"></span>
 
-  <script src="calc/breakdown.js"></script>
+  <script src="calc/breakdown.js?v=2"></script>
 
-  <script src="calc/highlighter.js"></script>
-  <script src="calc/export.js"></script>
-  <script src="calc/export-csv.js"></script>
-  <script src="calc/num-prop.js"></script>
-  <script src="calc/edit-ciphers.js"></script>
-  <script src="calc/date-calc.js"></script>
-  <script src="calc/database.js"></script>
-  <script src="calc/quick-guide.js"></script>
+  <script src="calc/highlighter.js?v=2"></script>
+  <script src="calc/export.js?v=2"></script>
+  <script src="calc/export-csv.js?v=2"></script>
+  <script src="calc/num-prop.js?v=2"></script>
+  <script src="calc/edit-ciphers.js?v=2"></script>
+  <script src="calc/date-calc.js?v=2"></script>
+  <script src="calc/database.js?v=2"></script>
+  <script src="calc/quick-guide.js?v=2"></script>
 
-  <script src="calc/localstorage.js"></script>
-  <script src="calc/encoding.js"></script>
-  <script src="calc/encoding-ciphers.js"></script>
+  <script src="calc/localstorage.js?v=2"></script>
+  <script src="calc/encoding.js?v=2"></script>
+  <script src="calc/encoding-ciphers.js?v=2"></script>
 
-  <script src="calc/coderain.js"></script>
-  <script src="lib/html2canvas.min.js"></script>
+  <script src="calc/coderain.js?v=2"></script>
+  <script src="lib/html2canvas.min.js?v=2"></script>
 
   <!-- Initialzie the calculator.  This needs to run before loading a database or theme. -->
   <script>
@@ -131,11 +163,44 @@
   </script>
 
   <!-- AUTO LOAD DATABASE (DB) -->
-  <!-- To change the word matching database reference a different file in the script below or append lines to db.txt -->
+  <!-- Tries pre-computed db.json first (instant matching), falls back to db.txt (live mode) -->
 
   <script>
-    var database = loadFile("db.txt");
-    importFileAction(database, true);
+    // Show loading indicator
+    document.getElementById("dbLoadIndicator").style.display = "inline";
+
+    // Load pre-computed db.json (instant matching, ~16MB gzipped via mod_deflate)
+    // Falls back to db.txt (2.3MB, live mode with recalculation)
+    var _c = (typeof CALC_CONFIG !== 'undefined') ? CALC_CONFIG : {};
+    var _jsonUrl = _c.databaseJsonUrl || "db.json";
+    var _txtUrl = _c.databaseTxtUrl || "db.txt";
+    var _mode = _c.databaseMode || "auto";
+
+    function _dbLoaded() {
+      document.getElementById("dbLoadIndicator").style.display = "none";
+      var amb = document.getElementById("autoMatchBtn");
+      amb.classList.remove("hideValue");
+      if (!autoMatchEnabled) amb.classList.add("matchOff");
+    }
+
+    if (_mode === "txt") {
+      var database = loadFile(_txtUrl);
+      importFileAction(database, true);
+      _dbLoaded();
+    } else {
+      fetch(_jsonUrl)
+        .then(function(r) {
+          if (!r.ok) throw new Error("db.json not found (" + r.status + ")");
+          return r.json();
+        })
+        .then(function(data) { loadPrecomputedDB(data); _dbLoaded(); })
+        .catch(function(err) {
+          console.log("Pre-computed DB not available, using live mode:", err.message);
+          var database = loadFile(_txtUrl);
+          importFileAction(database, true);
+          _dbLoaded();
+        });
+    }
   </script>
 
   <!-- AUTO LOAD THEME -->

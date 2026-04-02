@@ -93,7 +93,7 @@ $(document).ready(function(){
 		updateDatabaseQueryTable(st, n, true) // update only the table at new position
 	});
 	$("body").on("change", "#queryScrollbar", function () {
-		document.getElementById("queryPosInput").focus() // restore focus after using scrollbar
+		if (navigator.maxTouchPoints <= 1) document.getElementById("queryPosInput").focus() // restore focus after using scrollbar (desktop only)
 	});
 
 	// Search bar
@@ -107,9 +107,30 @@ $(document).ready(function(){
 		}
 	});
 
-	// Click on minimize button
-	$("body").on("click", "#queryMinBtn", function () {
-		$("#queryArea").toggleClass("minimizeQuery")
+	function toggleQueryMinimize() {
+		var qa = $("#queryArea");
+		qa.toggleClass("minimizeQuery");
+		var btn = document.getElementById("queryMinBtn");
+		if (btn) btn.textContent = qa.hasClass("minimizeQuery") ? "+" : "_";
+	}
+
+	// Click/tap on header bar to toggle minimize
+	$("body").on("click", "#queryHeaderBar", function (e) {
+		e.stopPropagation();
+		toggleQueryMinimize();
+	});
+
+	// Click/tap on table cells to minimize (not on interactive elements)
+	$("body").on("click", "#QueryTable td, #QueryTable th", function (e) {
+		if ($(e.target).is("input, button, a, select")) return;
+		if (!$("#queryArea").hasClass("minimizeQuery")) {
+			toggleQueryMinimize();
+		}
+	});
+
+	// Tap anywhere on the MINIMIZED modal to restore it
+	$("body").on("click", "#queryArea.minimizeQuery", function (e) {
+		toggleQueryMinimize();
 	});
 });
 
@@ -443,7 +464,18 @@ $(document).ready(function(){
 			updateHistoryTableAutoHlt();
 			return; // don't update history
 		}
-		if (optFiltCrossCipherMatch) { autoHistoryTableLayout(); updateHistoryTable(); } else { updateHistoryTableSameCiphMatch(); }
+		if (document.getElementById("highlightBox").value === "") {
+			// Backspaced to empty — clear highlights
+			if (userOpenCiphers.length > 0) {
+				removeActiveFilter(); // filter was applied via Enter, do full restore
+			} else {
+				// Just typed numbers without Enter — simply update table without highlights
+				$("#clearFilterButton").html("");
+				freq = [];
+				autoHistoryTableLayout();
+				updateHistoryTable();
+			}
+		} else if (optFiltCrossCipherMatch) { autoHistoryTableLayout(); updateHistoryTable(); } else { updateHistoryTableSameCiphMatch(); }
     });
 	
 	$("body").on("click", "td.hC", function () { // Cipher Name in history table (normal mode)
