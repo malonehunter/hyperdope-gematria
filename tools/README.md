@@ -9,7 +9,8 @@ query), it can instead load a precomputed `db.json` containing all 69 cipher val
 `db.json` is a build artifact derived from `db.txt` + `calc/ciphers.js`. It is not committed
 to the repo (it's large). Two ways to get it:
 
-1. **Download** the prebuilt `db.json` from the latest [GitHub Release](../../releases).
+1. **Download** the prebuilt `db.json` from the latest
+   [GitHub Release](https://github.com/malonehunter/hyperdope-gematria/releases/latest).
    Place it next to `index.html`.
 2. **Regenerate** it yourself:
 

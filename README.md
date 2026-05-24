@@ -1,6 +1,6 @@
 # Cypher Calculator
 
-A gematria cypher calculator with pre-computed instant matching, 145k+ curated word database, and full whitelabel support via `config.js`.
+A gematria cypher calculator with pre-computed instant matching, 209k+ curated word database, and full whitelabel support via `config.js`.
 
 **[Try it live →](https://cypher.hyperdope.com)**
 
@@ -59,14 +59,21 @@ git pull origin master
 
 ## Database
 
-**145,821 curated entries** — cleaned and enriched from the original 153k user-search database.
+**209,667 curated entries** — cleaned, enriched, and restored from the original user-search database.
 
-- **Removed:** 13,317 junk entries (spam, gibberish, personal rants, serial spammers)
-- **Added:** 8,536 terms across 17 research categories (occult, theology, 9/11, gematria, psyop, cosmology, bitcoin, AI, coronavirus, world affairs, economics, health, intelligence, history, politics, civil liberties, free speech)
+- Specialty sets (Liber AL, Latin, Roman numerals, spelled-out numbers, Illuminati/esoteric terms)
+- Restoration of ~20k entries an earlier over-aggressive cleanup had removed (concentrated at the alphabet "ends" — A/B/C/X/Y/Z)
+- ~7.7k recovered Thelemic/Hermetic terms (CCRU/Numogram, Crowley, Rosicrucian)
+- See [CHANGELOG.md](CHANGELOG.md) for the full v2.1 breakdown
 
-### Pre-computed Mode
+### Pre-computed Mode (instant matching)
 
-For instant matching (~100ms vs 2-5s), generate `db.json` with all 69 cipher values pre-calculated per entry. The calculator tries `db.json` first, falls back to `db.txt`. Set `databaseMode` in config.js.
+Out of the box the calculator runs in **live mode** — it loads `db.txt` and computes cipher values on the fly (works immediately, ~2-5s per query). For **instant matching** (~100ms), use the pre-computed `db.json`:
+
+- **Download** the prebuilt `db.json` from the [latest release](https://github.com/malonehunter/hyperdope-gematria/releases/latest) and drop it next to `index.html`, **or**
+- **Rebuild** it from `db.txt`: `python3 tools/generate_db_json.py db.txt db.json`
+
+The calculator auto-detects `db.json` (tries it first, falls back to `db.txt`) — see `databaseMode` in `config.js` (default `"auto"`). No code changes needed.
 
 ### Adding Entries
 
