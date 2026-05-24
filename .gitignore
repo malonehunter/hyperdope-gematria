@@ -1,2 +1,4 @@
 config.js
 db.json
+__pycache__/
+*.pyc
