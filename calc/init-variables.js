@@ -123,6 +123,8 @@ $(document).ready(function(){
 	// Click/tap on table cells to minimize (not on interactive elements)
 	$("body").on("click", "#QueryTable td, #QueryTable th", function (e) {
 		if ($(e.target).is("input, button, a, select")) return;
+		// Don't minimize if the user is selecting/copying text from the cell
+		if (window.getSelection && window.getSelection().toString().length > 0) return;
 		if (!$("#queryArea").hasClass("minimizeQuery")) {
 			toggleQueryMinimize();
 		}

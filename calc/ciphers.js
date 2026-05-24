@@ -495,7 +495,7 @@ cipherList = [
     false
   ),
   new cipher(
-    "Latin",
+    "Latin (Jewish)",
     "Latin",
     260,
     100,
@@ -513,7 +513,7 @@ cipherList = [
     false
   ),
   new cipher(
-    "Latin Ordinal",
+    "Latin Ordinal (Jewish Ord.)",
     "Latin",
     259,
     65,
@@ -531,7 +531,7 @@ cipherList = [
     false
   ),
   new cipher(
-    "Latin Reduction",
+    "Latin Reduction (Jewish Red.)",
     "Latin",
     277,
     46,
@@ -892,7 +892,7 @@ cipherList = [
     false
   ),
   new cipher(
-    "Alphanumeric Satanic",
+    "Alphanumeric Case Sensitive",
     "Other",
     32,
     68,
