@@ -41,7 +41,7 @@ var CALC_CONFIG = {
   ],
   // Custom cipher category groupings
   customCategories: [
-    { name: "CCRU", ciphers: ["Alphanumeric Qabbala", "Synx", "Keypad"] },
+    { name: "Favorites", ciphers: ["Ordinal", "Reduction", "Alphanumeric Qabbala"] },
   ],
   // See config.default.js for all options
 };
@@ -66,14 +66,14 @@ git pull origin master
 - ~7.7k recovered Thelemic/Hermetic terms (CCRU/Numogram, Crowley, Rosicrucian)
 - See [CHANGELOG.md](CHANGELOG.md) for the full v2.1 breakdown
 
-### Pre-computed Mode (instant matching)
+### Pre-computed Mode (instant matching + progressive loading)
 
-Out of the box the calculator runs in **live mode** — it loads `db.txt` and computes cipher values on the fly (works immediately, ~2-5s per query). For **instant matching** (~100ms), use the pre-computed `db.json`:
+Out of the box the calculator runs in **live mode** — it loads `db.txt` and computes cipher values on the fly (works immediately, ~2-5s per query). For **instant matching** (~100ms), use the pre-computed JSON:
 
-- **Download** the prebuilt `db.json` from the [latest release](https://github.com/malonehunter/hyperdope-gematria/releases/latest) and drop it next to `index.html`, **or**
-- **Rebuild** it from `db.txt`: `python3 tools/generate_db_json.py db.txt db.json`
+- **Download** the prebuilt **`db.json` and `db_lite.json`** from the [latest release](https://github.com/malonehunter/hyperdope-gematria/releases/latest) and drop them next to `index.html`, **or**
+- **Rebuild** both from `db.txt`: `python3 tools/generate_db_json.py db.txt db.json` (emits `db.json` + `db_lite.json`).
 
-The calculator auto-detects `db.json` (tries it first, falls back to `db.txt`) — see `databaseMode` in `config.js` (default `"auto"`). No code changes needed.
+With both present, the calculator **loads progressively**: `db_lite.json` (the default ciphers) paints in ~2s with immediate matching, then the full `db.json` streams in and swaps in the background. It auto-detects them (see `databaseMode` / `databaseLiteJsonUrl` in `config.js`). Bump `databaseVersion` in `config.js` whenever you update the databases to cache-bust browsers.
 
 ### Adding Entries
 
@@ -81,8 +81,10 @@ Append phrases as new lines to `db.txt`. File must start with `CREATE_GEMATRO_DB
 
 ## Features
 
-- 85 ciphers (69 English + Hebrew, Greek, Arabic, Russian)
-- Pre-computed instant matching via db.json
+- 95 ciphers (80 English-applicable + Hebrew, Greek, Arabic, Russian)
+- Progressive pre-computed matching (fast lite first paint, full set in the background)
+- Configurable default cipher loadout + Base/Default/All presets
+- Desktop keyboard nav for the results modal (arrows page / minimize)
 - Auto-match on Enter (configurable toggle)
 - Escape closes modal / clears filter
 - Mobile optimized (keyboard dismisses, touch minimize)

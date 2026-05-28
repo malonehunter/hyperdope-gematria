@@ -9,7 +9,7 @@ function queryDatabase() {
 	$("#calcMain").addClass("splitInterface") // split screen
 
 	if (document.getElementById("queryArea") == null) { // create div if it doesn't exist
-		var o = '<div id="queryArea"></div>'
+		var o = '<div id="queryArea" tabindex="-1"></div>'
 		$(o).appendTo('body');
 	}
 	// Position modal below the enabled cipher table (the Ordinal/Reduction values box)
@@ -67,6 +67,14 @@ function queryDatabase() {
 	/*var o = 'min-width:'+tWidth+';width:'+tWidth+';'
 	$("#queryArea").attr("style", o) // set minimal/initial width for the table*/
 	updateDatabaseQueryTable(0, dbPageItems)
+
+	// Progressive loading: surface the spinner ONLY when this query is waiting on "…" cells
+	// (a non-lite cipher enabled before the full db finished streaming); hide it otherwise.
+	var _ind = document.getElementById("dbLoadIndicator")
+	if (_ind) {
+		if (!fullDBLoaded && queryHadUnloadedCipher) { _ind.title = "loading all cyphers…"; _ind.style.display = "inline" }
+		else { _ind.style.display = "none" }
+	}
 }
 
 function clearDatabaseQueryTable() {
@@ -96,6 +104,7 @@ function searchDBcrossCipher() { // populate "queryResult" array with matching p
 	for (p = 0; p < userDB.length; p++) { // for each phrase in database
 		tmpArr = [0, userDB[p][0]] // reset, set score[0], phrase[1]
 		for (m = 0; m < gemArrCiphUsed.length; m++) { // for each enabled cipher index
+			if (gemArrCiphUsed[m] === -1) { tmpArr.push(null); continue } // cipher not in current db (not yet loaded) — show "—", no score
 			tmpVal = Number(userDB[p][gemArrCiphUsed[m]+1]) // value for that phrase (+1 because [0] contains phrase), string to number
 			tmpArr.push(tmpVal) // first add values irrelevant of match validity
 			for (n = 0; n < gemArr.length; n++) { // for each gematria value (cross cipher)
@@ -142,6 +151,7 @@ function searchDBsameCipher() { // populate "queryResult" array with matching ph
 	for (p = 0; p < userDB.length; p++) { // for each phrase in database
 		tmpArr = [0, userDB[p][0]] // reset, set score[0], phrase[1]
 		for (m = 0; m < gemArrCiphUsed.length; m++) { // for each enabled cipher index
+			if (gemArrCiphUsed[m] === -1) { tmpArr.push(null); continue } // cipher not in current db (not yet loaded) — show "—", no score
 			tmpVal = Number(userDB[p][gemArrCiphUsed[m]+1]) // value for that phrase (+1 because [0] contains phrase), string to number
 			tmpArr.push(tmpVal) // first add values irrelevant of match validity
 			if (tmpVal == gemArr[m]) {
@@ -282,6 +292,11 @@ function updateDatabaseQueryTable(stPos = 0, dItems, scrollBarEvent = false) { /
 			// if (gemVal == 0) gemVal = "-"
 			valPos++ // increment value position
 
+			if (gemVal === null) { // cipher not in the current db yet (precompute still streaming) — placeholder
+				ms += '<td class="tCQ"><span class="gVQ" title="loading full cipher set…" style="color: hsl(0 0% 50% / '+alphaHlt+')"> … </span></td>'
+				continue
+			}
+
 			// mSame - same cipher match, mCross - cross cipher match
 			if ( gemVal == gemArr[y] ) {mSame = true} else {mSame = false} // if value is at the same index (meaning same cipher)
 			if (gemArr.indexOf(gemVal) > -1) {mCross = true} else {mCross = false}
@@ -305,9 +320,9 @@ function updateDatabaseQueryTable(stPos = 0, dItems, scrollBarEvent = false) { /
 	} else {
 		document.getElementById("queryArea").innerHTML = ms
 	}
-	if (navigator.maxTouchPoints <= 1 && !scrollBarEvent) { // ignore scrollbar event
-		// Return focus to main phrase box so user can immediately type next query
-		document.getElementById("phraseBox").focus()
+	if (navigator.maxTouchPoints <= 1 && !scrollBarEvent) { // desktop: focus the modal so arrow keys navigate it (B+); typing snaps back to the phrase box
+		var _qa = document.getElementById("queryArea")
+		if (_qa) _qa.focus()
 	}
 }
 
@@ -335,7 +350,7 @@ function queryShowPrevPage() {
 	n = $("#QueryTable").data("dispitems")
 	$("#queryArea").html() // clear previous table
 	updateDatabaseQueryTable(st, n) // redraw table at new position
-	if (navigator.maxTouchPoints <= 1) document.getElementById("queryPosInput").focus() // restore focus on desktop devices
+	if (navigator.maxTouchPoints <= 1) document.getElementById("queryArea").focus() // keep the modal focused for arrow-key nav (B+)
 }
 
 function queryShowNextPage() {
@@ -348,7 +363,7 @@ function queryShowNextPage() {
 	n = $("#QueryTable").data("dispitems")
 	$("#queryArea").html() // clear previous table
 	updateDatabaseQueryTable(st, n) // redraw table at new position
-	if (navigator.maxTouchPoints <= 1) document.getElementById("queryPosInput").focus() // restore focus on desktop devices
+	if (navigator.maxTouchPoints <= 1) document.getElementById("queryArea").focus() // keep the modal focused for arrow-key nav (B+)
 }
 
 function unloadDatabase() {
@@ -437,15 +452,41 @@ function loadPrecomputedDB(data) {
 	displayCalcNotification(loadedMsg, 2500)
 }
 
+var fullDBLoaded = false
+function swapToFullDB(fullData) { // progressive loading: replace the lite db with the full set
+	if (!fullData || !fullData.cipher_order || !fullData.data) return
+	cipherOrder = fullData.cipher_order
+	userDB = fullData.data
+	fullDBLoaded = true
+	var _ind = document.getElementById("dbLoadIndicator"); if (_ind) _ind.style.display = "none" // background full done — hide the spinner
+	console.log("Full precomputed DB swapped in (" + cipherOrder.length + " ciphers, " + userDB.length + " entries).")
+	// If a results modal is open AND the last query used a cipher not in the lite db
+	// (a "—" column), re-run it IN PLACE so those columns fill + matches/ranking update.
+	// Single-threaded JS means this can't interrupt a running query — it runs between events.
+	// Only surface the swap if the user was waiting on "…" cells (queried a not-yet-loaded
+	// cipher early). Otherwise swap SILENTLY — the next query just uses the full set.
+	if (document.getElementById("queryArea") !== null && queryHadUnloadedCipher) {
+		var prevFilter = searchBarValue
+		queryDatabase() // re-run in place to fill the "…" cells
+		if (prevFilter) searchBarDBQuery(prevFilter) // restore the search-bar filter
+		displayCalcNotification("all " + cipherOrder.length + " cyphers ready", 2000)
+	}
+}
+
+var queryHadUnloadedCipher = false // true if the last query used a cipher not in the loaded db (progressive loading)
+
 function getPrecomputedCipherPositions() {
-	// Map enabled cipher names to their column indices in db.json
-	// Returns 0-based indices into cipher_order (NOT +1 adjusted)
-	// because searchDBcrossCipher/sameCipher already add +1 when accessing userDB
+	// Map each ENABLED cipher (in cipherList order = gemArr order) to its column index
+	// in the loaded db.json cipher_order. Returns -1 for a cipher not in the current db
+	// (e.g. a non-lite cipher enabled before the full set has streamed in) so the array
+	// stays 1:1 aligned with gemArr/gemArrCiph. Callers treat -1 as "show —, don't score".
 	var positions = []
+	queryHadUnloadedCipher = false
 	for (var i = 0; i < cipherList.length; i++) {
 		if (cipherList[i].enabled) {
 			var pos = cipherOrder.indexOf(cipherList[i].cipherName)
-			if (pos > -1) positions.push(pos) // 0-based; search functions add +1
+			positions.push(pos) // 0-based column, or -1 if not in current db
+			if (pos === -1) queryHadUnloadedCipher = true
 		}
 	}
 	return positions

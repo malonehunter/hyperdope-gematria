@@ -962,6 +962,24 @@ body {
   background-color: var(--btn-bg-accent);
   /*background-color: transparent;*/
 }
+/* 5-button cipher-preset row (Empty/Base/Default/All(EN)/All) in the Cyphers dropdown
+   ONLY. Flex row distributes the buttons evenly edge-to-edge (no centered dead-space),
+   each sized to width/5. Scoped via .ciphPresetRow so it can't touch any other modal,
+   the shared .intBtn3 (Query/Enter) buttons, or the .intBtn (Export/Save) buttons. */
+.ciphPresetRow {
+  display: flex;
+  gap: 0.3em;
+  margin: 0 0 0.5em 0;
+}
+.ciphPresetRow .ciphPresetBtn {
+  flex: 1 1 0;
+  width: auto;   /* override .intBtn3's fixed 85px */
+  min-width: 0;  /* allow even distribution */
+  padding: 0.2em 0.1em;
+  margin: 0;     /* gap handles spacing */
+  font-size: 95%;
+  white-space: nowrap;
+}
 @media (max-width: 911px) {
   /* mobile */
   #queryDBbtn {
@@ -1574,6 +1592,7 @@ body {
   resize: horizontal;
   z-index: 100;
 }
+#queryArea:focus { outline: none; } /* focused for arrow-key nav (B+) — hide the focus ring */
 @media (max-width: 911px) {
   /* mobile — center the modal */
   #queryArea {

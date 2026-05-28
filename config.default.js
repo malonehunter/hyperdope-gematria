@@ -36,14 +36,22 @@ var CALC_CONFIG = {
 
   // --- Database ---
   databaseMode: "auto",           // "auto" tries db.json then db.txt | "json" | "txt"
-  databaseJsonUrl: "db.json",
+  databaseJsonUrl: "db.json",           // full set — loaded in background
+  databaseLiteJsonUrl: "db_lite.json",  // lite set (common ciphers) — loaded first for fast paint
   databaseTxtUrl: "db.txt",
+  databaseVersion: 1,                   // bump on each db.json regen -> cache-busts the db fetch (?v=N)
 
   // --- Defaults ---
   autoMatchDesktop: true,
   autoMatchMobile: false,
   resultsPerPage: 12,
   newPhrasesOnTop: true,
+
+  // Ciphers enabled by default on first load + "reset to defaults". Overrides the
+  // enabled:true flags in ciphers.js. Empty => use ciphers.js defaults (classic 4).
+  // Names must match ciphers.js exactly. Example:
+  // defaultEnabledCiphers: ["Ordinal", "Reduction", "Reverse Ordinal", "Reverse Reduction"],
+  defaultEnabledCiphers: [],
 
   // --- Custom Cipher Categories ---
   // Group ciphers into custom menu sections. Ciphers are referenced by

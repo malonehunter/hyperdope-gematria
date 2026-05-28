@@ -18,6 +18,15 @@ from pathlib import Path
 
 from all_ciphers import get_ciphers, compute_value
 
+# Lite db.json cipher subset for progressive first-paint. MUST stay in sync with
+# production config.js `defaultEnabledCiphers` (the default 16-cipher loadout).
+LITE_CIPHERS = [
+    "Ordinal", "Reduction", "Reverse Ordinal", "Reverse Reduction",
+    "Standard", "Latin (Jewish)", "English Sumerian", "Satanic Gematria",
+    "Bacon Simple", "Septenary", "Chaldean (Cheiro)", "Primes",
+    "Alphanumeric Qabbala", "Synx", "Alphanumeric Case Sensitive", "English Qaballa",
+]
+
 
 def main():
     in_path = Path(sys.argv[1] if len(sys.argv) > 1 else "db_track_a.txt")
@@ -73,6 +82,28 @@ def main():
 
     size_mb = out_path.stat().st_size / 1024 / 1024
     print(f"Done. {n} entries, {size_mb:.1f} MB, {time.time()-t0:.0f}s total")
+
+    # --- lite db.json: only LITE_CIPHERS columns, for progressive first-paint ---
+    missing = [c for c in LITE_CIPHERS if c not in cipher_order]
+    if missing:
+        print(f"WARNING: LITE_CIPHERS not in cipher_order (skipped): {missing}")
+    lite_idx = [cipher_order.index(c) for c in LITE_CIPHERS if c in cipher_order]
+    lite_order = [cipher_order[i] for i in lite_idx]
+    lite_data = [[row[0]] + [row[i + 1] for i in lite_idx] for row in data]
+    lite_out = {
+        "version": 2,
+        "format": "HYPER_CYPHERS",
+        "tier": "lite",
+        "generated": date.today().isoformat(),
+        "entries": n,
+        "cipher_order": lite_order,
+        "data": lite_data,
+    }
+    lite_path = out_path.with_name(out_path.stem + "_lite" + out_path.suffix)
+    with open(lite_path, "w", encoding="utf-8") as f:
+        json.dump(lite_out, f, separators=(",", ":"))
+    lite_mb = lite_path.stat().st_size / 1024 / 1024
+    print(f"Lite: {len(lite_order)} ciphers -> {lite_path.name}, {lite_mb:.1f} MB")
 
 
 if __name__ == "__main__":

@@ -51,8 +51,8 @@ var optGemSubstitutionMode = true; // simple substitution of characters with cor
 var optGemMultCharPos = false; // value of each character is multiplied by character index
 var optGemMultCharPosReverse = false; // value of each character is multiplied by character index in reverse order
 
-var optFiltSameCipherMatch = false; // filter shows only phrases that match in the same cipher
-var optFiltCrossCipherMatch = true; // filter shows only ciphers that have matching values
+var optFiltSameCipherMatch = true; // DEFAULT: only phrases matching in the SAME cipher (tighter, more meaningful results)
+var optFiltCrossCipherMatch = false; // phrases sharing a value across ANY enabled cipher (broader, noisier)
 var alphaHlt = 0.15; // opacity for values that do not match - change value here and in conf_SOM()
 
 var optAllowPhraseComments = true; // allow phrase comments, text inside [...] is not evaluated
@@ -259,18 +259,20 @@ function createCiphersMenu() {
 
   o += '<div class="dropdown">';
   o += '<button class="dropbtn">Cyphers</button>';
-  o += '<div class="dropdown-content" style="width: 380px;">';
+  o += '<div class="dropdown-content" style="width: 410px;">';
 
-  o += "<div><center>";
+  o += '<div class="ciphPresetRow">';
   o +=
-    '<input class="intBtn3" type="button" value="Empty" onclick="disableAllCiphers()">';
+    '<input class="intBtn3 ciphPresetBtn" type="button" value="Empty" onclick="disableAllCiphers()">';
   o +=
-    '<input class="intBtn3" type="button" value="Default" onclick="enableDefaultCiphers()">';
+    '<input class="intBtn3 ciphPresetBtn" type="button" value="Base" onclick="enableBaseCiphers()">';
   o +=
-    '<input class="intBtn3" type="button" value="All (EN)" onclick="enableAllEnglishCiphers()">';
+    '<input class="intBtn3 ciphPresetBtn" type="button" value="Default" onclick="enableDefaultCiphers()">';
   o +=
-    '<input class="intBtn3" type="button" value="All" onclick="enableAllCiphers()">';
-  o += "</center></div>";
+    '<input class="intBtn3 ciphPresetBtn" type="button" value="All (EN)" onclick="enableAllEnglishCiphers()">';
+  o +=
+    '<input class="intBtn3 ciphPresetBtn" type="button" value="All" onclick="enableAllCiphers()">';
+  o += "</div>";
 
   o +=
     '<hr style="background-color: var(--separator-accent2); height: 1px; border: none; margin: 0.4em;">';
@@ -646,9 +648,9 @@ function conf_SCM() {
     chkCCM = document.getElementById("chkbox_CCM");
     if (chkCCM !== null) chkCCM.checked = false;
   } else if (!optFiltCrossCipherMatch && !optFiltSameCipherMatch) {
-    optFiltCrossCipherMatch = true; // can't disable both, revert to cross match as default
-    chkCCM = document.getElementById("chkbox_CCM");
-    if (chkCCM !== null) chkCCM.checked = true;
+    optFiltSameCipherMatch = true; // can't disable both — keep same match (the default)
+    chkSCM = document.getElementById("chkbox_SCM");
+    if (chkSCM !== null) chkSCM.checked = true;
   }
 }
 
@@ -1509,6 +1511,26 @@ function initCiphers(updDefCiph = true) {
       if (cCat.indexOf(catName) == -1) cCat.push(catName);
     }
   }
+  // Config-driven default-enabled set (fork branding). If CALC_CONFIG.defaultEnabledCiphers
+  // is a non-empty array, it REPLACES the ciphers.js enabled:true defaults — so this fork can
+  // open with a curated loadout while the open-source default stays the bare 4. Unknown names
+  // are skipped with a warning. Becomes the "reset to defaults" baseline (defaultCipherArraySaved).
+  // Gated on runOnceRestoreCalcSet: this is the fresh-new-user setup path ONLY. When restoring
+  // SAVED user settings, runOnceRestoreCalcSet is already false, so we DON'T override (and thus
+  // don't stomp the user's saved cipher selection).
+  if (runOnceRestoreCalcSet && updDefCiph && typeof CALC_CONFIG !== 'undefined' && Array.isArray(CALC_CONFIG.defaultEnabledCiphers) && CALC_CONFIG.defaultEnabledCiphers.length > 0) {
+    var _validNames = cipherList.map(function (c) { return c.cipherName; });
+    var _cfgDefaults = [];
+    for (var dc = 0; dc < CALC_CONFIG.defaultEnabledCiphers.length; dc++) {
+      var _nm = CALC_CONFIG.defaultEnabledCiphers[dc];
+      if (_validNames.indexOf(_nm) > -1) {
+        if (_cfgDefaults.indexOf(_nm) === -1) _cfgDefaults.push(_nm);
+      } else {
+        console.warn("defaultEnabledCiphers: unknown cipher '" + _nm + "' (skipped)");
+      }
+    }
+    if (_cfgDefaults.length > 0) defaultCipherArray = _cfgDefaults;
+  }
   if (defaultCipherArraySaved.length == 0)
     defaultCipherArraySaved = [...defaultCipherArray]; // copy of initial default ciphers
   initColorArrays();
@@ -1581,6 +1603,22 @@ function disableAllCiphers() {
     cur_chkbox = document.getElementById("cipher_chkbox" + i);
     cipherList[i].enabled = false; // if checkbox exists toggle state (next line)
     if (cur_chkbox !== null) cur_chkbox.checked = false;
+  }
+  updateTables(); // update
+}
+
+// "Base" preset: the universal classic-4 gematria set. Independent of config and
+// saved settings, so it always selects exactly these 4 — a one-click return to the
+// base view (vs "Default", which is the fork's full default loadout).
+function enableBaseCiphers() {
+  prevCiphIndex = -1; // reset cipher selection
+  var base = ["Ordinal", "Reduction", "Reverse Ordinal", "Reverse Reduction"];
+  var cur_chkbox;
+  for (i = 0; i < cipherList.length; i++) {
+    var on = base.indexOf(cipherList[i].cipherName) > -1;
+    cipherList[i].enabled = on;
+    cur_chkbox = document.getElementById("cipher_chkbox" + i);
+    if (cur_chkbox !== null) cur_chkbox.checked = on;
   }
   updateTables(); // update
 }

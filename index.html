@@ -11,16 +11,16 @@
   <!-- Android Web App - Add to Home Screen -->
   <link rel="manifest" href="manifest.json" />
 
-  <script src="config.js?v=3"></script>
+  <script src="config.js?v=8"></script>
   <script src="lib/jquery.min.js?v=2"></script>
   <!-- html2canvas v1.0.0-alpha.12 -->
 
   <script src="calc/gematria.js?v=2"></script>
-  <script src="calc/calc.js?v=2"></script>
-  <script src="calc/init-variables.js?v=3"></script>
-  <script src="calc/ciphers.js?v=3"></script>
+  <script src="calc/calc.js?v=6"></script>
+  <script src="calc/init-variables.js?v=5"></script>
+  <script src="calc/ciphers.js?v=5"></script>
 
-  <link rel="stylesheet" type="text/css" href="calc/styles.css?v=2" />
+  <link rel="stylesheet" type="text/css" href="calc/styles.css?v=5" />
 
   <script>
     window.onpaint = function () {
@@ -147,7 +147,7 @@
   <script src="calc/num-prop.js?v=2"></script>
   <script src="calc/edit-ciphers.js?v=2"></script>
   <script src="calc/date-calc.js?v=2"></script>
-  <script src="calc/database.js?v=2"></script>
+  <script src="calc/database.js?v=6"></script>
   <script src="calc/quick-guide.js?v=2"></script>
 
   <script src="calc/localstorage.js?v=2"></script>
@@ -175,6 +175,8 @@
     var _jsonUrl = _c.databaseJsonUrl || "db.json";
     var _txtUrl = _c.databaseTxtUrl || "db.txt";
     var _mode = _c.databaseMode || "auto";
+    var _liteUrl = _c.databaseLiteJsonUrl || "db_lite.json";
+    var _dbVer = _c.databaseVersion ? ("?v=" + _c.databaseVersion) : ""; // cache-bust db.json/db_lite.json on each regen
 
     function _dbLoaded() {
       document.getElementById("dbLoadIndicator").style.display = "none";
@@ -183,22 +185,34 @@
       if (!autoMatchEnabled) amb.classList.add("matchOff");
     }
 
+    // Background: fetch the full 69-cipher set, then swap it in for the lite set.
+    function _fetchFull() {
+      fetch(_jsonUrl + _dbVer)
+        .then(function(r) { if (!r.ok) throw new Error("full db.json " + r.status); return r.json(); })
+        .then(function(data) { swapToFullDB(data); })
+        .catch(function(err) { console.log("Full DB unavailable (keeping lite):", err.message); });
+    }
+
     if (_mode === "txt") {
       var database = loadFile(_txtUrl);
       importFileAction(database, true);
       _dbLoaded();
     } else {
-      fetch(_jsonUrl)
-        .then(function(r) {
-          if (!r.ok) throw new Error("db.json not found (" + r.status + ")");
-          return r.json();
-        })
-        .then(function(data) { loadPrecomputedDB(data); _dbLoaded(); })
-        .catch(function(err) {
-          console.log("Pre-computed DB not available, using live mode:", err.message);
-          var database = loadFile(_txtUrl);
-          importFileAction(database, true);
-          _dbLoaded();
+      // Progressive: lite first (fast first paint), then full in the background.
+      fetch(_liteUrl + _dbVer)
+        .then(function(r) { if (!r.ok) throw new Error("lite " + r.status); return r.json(); })
+        .then(function(data) { loadPrecomputedDB(data); _dbLoaded(); _fetchFull(); })
+        .catch(function(liteErr) {
+          console.log("Lite DB unavailable, loading full directly:", liteErr.message);
+          fetch(_jsonUrl + _dbVer)
+            .then(function(r) { if (!r.ok) throw new Error("db.json not found (" + r.status + ")"); return r.json(); })
+            .then(function(data) { loadPrecomputedDB(data); _dbLoaded(); })
+            .catch(function(err) {
+              console.log("Pre-computed DB not available, using live mode:", err.message);
+              var database = loadFile(_txtUrl);
+              importFileAction(database, true);
+              _dbLoaded();
+            });
         });
     }
   </script>

@@ -1,7 +1,7 @@
 // ==================================================================
 // breakdown.js
 
-var breakCipher = "English Ordinal" // current cipher for breakdown
+var breakCipher = "Ordinal" // current cipher for breakdown (must match a real cipher name)
 var bgCol = "var(--breakdown-bg-accent)" // breakdown table background color
 var chLimit = 30 // character limit, used to switch to a long breakdown style
 var maxRowWidth = 36 // one row character limit (long breakdown)
@@ -133,6 +133,23 @@ $(document).ready(function(){
 	// Tap anywhere on the MINIMIZED modal to restore it
 	$("body").on("click", "#queryArea.minimizeQuery", function (e) {
 		toggleQueryMinimize();
+	});
+
+	// Arrow-key navigation when the results modal itself is focused (desktop, B+):
+	// up/down = page, left/right = minimize/restore; typing a printable char snaps focus
+	// back to the phrase box (quick re-query). Guarded to e.target===queryArea so the
+	// slider / position box / search field keep their own key behavior.
+	$("body").on("keydown", "#queryArea", function (e) {
+		if (e.target.id !== "queryArea") return;
+		var minimized = $("#queryArea").hasClass("minimizeQuery");
+		if (e.which === 38) { if (!minimized) { queryShowPrevPage(); e.preventDefault(); } }
+		else if (e.which === 40) { if (!minimized) { queryShowNextPage(); e.preventDefault(); } }
+		else if (e.which === 37) { if (!minimized) { toggleQueryMinimize(); document.getElementById("queryArea").focus(); e.preventDefault(); } }
+		else if (e.which === 39) { if (minimized) { toggleQueryMinimize(); document.getElementById("queryArea").focus(); e.preventDefault(); } }
+		else if (e.key && e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+			var pb = document.getElementById("phraseBox"); // snap back to the phrase box + route the char
+			if (pb) { e.preventDefault(); pb.focus(); pb.value += e.key; pb.dispatchEvent(new Event("input", { bubbles: true })); }
+		}
 	});
 });
 
