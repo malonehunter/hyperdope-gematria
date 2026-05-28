@@ -53,6 +53,11 @@ var CALC_CONFIG = {
   // defaultEnabledCiphers: ["Ordinal", "Reduction", "Reverse Ordinal", "Reverse Reduction"],
   defaultEnabledCiphers: [],
 
+  // Optional "Curated" preset button — a one-click extended loadout. Empty/omitted => no
+  // button shown. Keep in sync with the lite db.json (tools/generate_db_json.py LITE_CIPHERS).
+  // Example: recommendedCiphers: ["Ordinal", "Reduction", "Alphanumeric Qabbala", ...],
+  recommendedCiphers: [],
+
   // --- Custom Cipher Categories ---
   // Group ciphers into custom menu sections. Ciphers are referenced by
   // their exact name from ciphers.js. They still appear in their original

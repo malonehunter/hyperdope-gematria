@@ -19,7 +19,7 @@ from pathlib import Path
 from all_ciphers import get_ciphers, compute_value
 
 # Lite db.json cipher subset for progressive first-paint. MUST stay in sync with
-# production config.js `defaultEnabledCiphers` (the default 16-cipher loadout).
+# production config.js `recommendedCiphers` (the 16-cipher "Curated" set).
 LITE_CIPHERS = [
     "Ordinal", "Reduction", "Reverse Ordinal", "Reverse Reduction",
     "Standard", "Latin (Jewish)", "English Sumerian", "Satanic Gematria",

@@ -266,8 +266,9 @@ function createCiphersMenu() {
     '<input class="intBtn3 ciphPresetBtn" type="button" value="Empty" onclick="disableAllCiphers()">';
   o +=
     '<input class="intBtn3 ciphPresetBtn" type="button" value="Base" onclick="enableBaseCiphers()">';
-  o +=
-    '<input class="intBtn3 ciphPresetBtn" type="button" value="Default" onclick="enableDefaultCiphers()">';
+  if (typeof CALC_CONFIG !== 'undefined' && Array.isArray(CALC_CONFIG.recommendedCiphers) && CALC_CONFIG.recommendedCiphers.length > 0)
+    o +=
+      '<input class="intBtn3 ciphPresetBtn" type="button" value="Curated" onclick="enableRecommendedCiphers()">';
   o +=
     '<input class="intBtn3 ciphPresetBtn" type="button" value="All (EN)" onclick="enableAllEnglishCiphers()">';
   o +=
@@ -1616,6 +1617,21 @@ function enableBaseCiphers() {
   var cur_chkbox;
   for (i = 0; i < cipherList.length; i++) {
     var on = base.indexOf(cipherList[i].cipherName) > -1;
+    cipherList[i].enabled = on;
+    cur_chkbox = document.getElementById("cipher_chkbox" + i);
+    if (cur_chkbox !== null) cur_chkbox.checked = on;
+  }
+  updateTables(); // update
+}
+
+// "Curated" preset: the fork's recommended extended loadout (CALC_CONFIG.recommendedCiphers,
+// = the lite-db set, so all match instantly). Button only renders when that list is non-empty.
+function enableRecommendedCiphers() {
+  prevCiphIndex = -1; // reset cipher selection
+  var rec = (typeof CALC_CONFIG !== 'undefined' && Array.isArray(CALC_CONFIG.recommendedCiphers)) ? CALC_CONFIG.recommendedCiphers : [];
+  var cur_chkbox;
+  for (i = 0; i < cipherList.length; i++) {
+    var on = rec.indexOf(cipherList[i].cipherName) > -1;
     cipherList[i].enabled = on;
     cur_chkbox = document.getElementById("cipher_chkbox" + i);
     if (cur_chkbox !== null) cur_chkbox.checked = on;
