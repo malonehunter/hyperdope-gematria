@@ -1,5 +1,23 @@
 # Changelog
 
+## v2.3 — Proper-Case Normalization & +6,421 Common Words
+
+### Changed
+- **Database normalized to Proper Case** — every word's first letter capitalized, while
+  preserving acronyms (NASA), Roman numerals (XXXIII), and mixed-case brands (iPhone).
+  ~60% of entries re-cased for consistent skimming. Only the 5 **case-sensitive** ciphers
+  (Alphanumeric Case Sensitive, Capitals Added/Mixed, Reverse Caps Added/Mixed) change value;
+  every other cipher lowercases input first, so their values are unaffected.
+
+### Added
+- **+6,421 common English words** filled in from the original Gematro 20K wordlist (short /
+  no-vowel fragments dropped). **209,667 → 216,088 entries.**
+
+### Tools
+- `tools/normalize_caps.py` — the smart Proper-Case pass: dictionary-aware acronym detection,
+  strict Roman-numeral + mixed-case preservation, digit/`[bracket]` passthrough. Reusable on
+  any Gematro `db.txt`.
+
 ## v2.2 — Progressive Loading, Curated Default Loadout & 11 New Ciphers
 
 ### Added
