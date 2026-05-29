@@ -59,8 +59,9 @@ git pull origin master
 
 ## Database
 
-**209,667 curated entries** — cleaned, enriched, and restored from the original user-search database.
+**216,088 curated entries** (Proper-Case normalized) — cleaned, enriched, and restored from the original user-search database.
 
+- Proper-Case normalization with acronym / Roman-numeral / mixed-case protection (see `tools/normalize_caps.py`), plus +6,421 common words from the original 20K wordlist (v2.3)
 - Specialty sets (Liber AL, Latin, Roman numerals, spelled-out numbers, Illuminati/esoteric terms)
 - Restoration of ~20k entries an earlier over-aggressive cleanup had removed (concentrated at the alphabet "ends" — A/B/C/X/Y/Z)
 - ~7.7k recovered Thelemic/Hermetic terms (CCRU/Numogram, Crowley, Rosicrucian)
