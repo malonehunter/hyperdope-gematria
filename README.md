@@ -71,7 +71,7 @@ git pull origin master
 
 Out of the box the calculator runs in **live mode** — it loads `db.txt` and computes cipher values on the fly (works immediately, ~2-5s per query). For **instant matching** (~100ms), use the pre-computed JSON:
 
-- **Download** the prebuilt **`db.json` and `db_lite.json`** from the [latest release](https://github.com/malonehunter/hyperdope-gematria/releases/latest) and drop them next to `index.html`, **or**
+- **Download** the prebuilt **`db.json` and `db_lite.json`** from the [latest release](https://github.com/malonehunter/hyperdope-gematria/releases/latest) (both files are attached to every tagged release, even when the database itself didn't change) and drop them next to `index.html`, **or**
 - **Rebuild** both from `db.txt`: `python3 tools/generate_db_json.py db.txt db.json` (emits `db.json` + `db_lite.json`).
 
 With both present, the calculator **loads progressively**: `db_lite.json` (the default ciphers) paints in ~2s with immediate matching, then the full `db.json` streams in and swaps in the background. It auto-detects them (see `databaseMode` / `databaseLiteJsonUrl` in `config.js`). Bump `databaseVersion` in `config.js` whenever you update the databases to cache-bust browsers.
