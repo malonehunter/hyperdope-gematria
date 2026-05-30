@@ -266,7 +266,7 @@ function updateHistoryTableSameCiphMatch() {
 			if (highlt_num.indexOf(v_grid_col[n][m]) > -1) { // if value is in highlight box
 				for (z = m+1; z < v_grid_col[n].length; z++) { // compare vs other values in same column
 					// if value matches another value in the same column and is present in highlight box
-					if (v_grid_col[n][m] == v_grid_col[n][z]) { 
+					if (v_grid_col[n][m] == v_grid_col[n][z]) {
 						hltBoolArr[m][n] = true // mark both as values to be highlighted
 						hltBoolArr[z][n] = true // [phrase][cipher]
 					}
@@ -499,7 +499,7 @@ function tdToggleHighlight(val){ // click on value in history table to toggle hi
 		hlt_val = JSON.stringify(highlt_num).replace(/,/g, " ") // to string
 		hlt_val = hlt_val.substring(1, hlt_val.length-1) // remove brackets
 		document.getElementById("highlightBox").value = hlt_val // update values inside textbox
-		if (optFiltCrossCipherMatch) { updateHistoryTable(); } else { updateHistoryTableSameCiphMatch(); }
+		if (!optHltSameCipher) { updateHistoryTable(); } else { updateHistoryTableSameCiphMatch(); }
 		return
 	}
 	
@@ -508,5 +508,5 @@ function tdToggleHighlight(val){ // click on value in history table to toggle hi
 		document.getElementById("highlightBox").value += " " // append space if necessary
 	}
 	document.getElementById("highlightBox").value += val // append clicked value to Highlight textbox
-	if (optFiltCrossCipherMatch) { updateHistoryTable(); } else { updateHistoryTableSameCiphMatch(); }
+	if (!optHltSameCipher) { updateHistoryTable(); } else { updateHistoryTableSameCiphMatch(); }
 };

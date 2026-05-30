@@ -53,6 +53,10 @@ var optGemMultCharPosReverse = false; // value of each character is multiplied b
 
 var optFiltSameCipherMatch = true; // DEFAULT: only phrases matching in the SAME cipher (tighter, more meaningful results)
 var optFiltCrossCipherMatch = false; // phrases sharing a value across ANY enabled cipher (broader, noisier)
+// History-table highlight-box mode, DECOUPLED from the query match mode above.
+// false = light EVERY cell whose value you typed (default); true = only same-cipher pairs
+// (values repeating within a column). Toggled by the ▦/▥ button next to #highlightBox.
+var optHltSameCipher = false;
 var alphaHlt = 0.15; // opacity for values that do not match - change value here and in conf_SOM()
 
 var optAllowPhraseComments = true; // allow phrase comments, text inside [...] is not evaluated
@@ -92,7 +96,9 @@ var calcOptionsArr = [
   "'optNumCalcMethod'+' = '+optNumCalcMethod",
   "'optFiltCrossCipherMatch'+' = '+optFiltCrossCipherMatch",
   "'optFiltSameCipherMatch'+' = '+optFiltSameCipherMatch",
+  "'optHltSameCipher'+' = '+optHltSameCipher",
   "'optShowOnlyMatching'+' = '+optShowOnlyMatching",
+  "'autoMatchEnabled'+' = '+autoMatchEnabled",
   "'optNewPhrasesGoFirst'+' = '+optNewPhrasesGoFirst",
   "'optShowExtraCiphers'+' = '+optShowExtraCiphers",
   "'optAllowPhraseComments'+' = '+optAllowPhraseComments",
@@ -332,6 +338,32 @@ function toggleAutoMatch() {
   } else {
     btn.classList.add("matchOff");
     btn.title = "Auto-match OFF — click to enable";
+  }
+  document.getElementById("phraseBox").focus();
+}
+
+// History-table highlight mode toggle (▼ single-icon, ⚡-pattern dim/lit).
+// Decoupled from the Cross/Same query match mode.
+// Sync the hltModeBtn UI (class + title) to the current optHltSameCipher value.
+// Called by toggleHltMode() and from _dbLoaded() after settings restore from localStorage.
+function syncHltModeBtn() {
+  var btn = document.getElementById("hltModeBtn");
+  if (btn === null) return;
+  if (optHltSameCipher) {
+    btn.classList.remove("hltModeOff");
+    btn.title = "Highlight: same column matches only — click for any matches";
+  } else {
+    btn.classList.add("hltModeOff");
+    btn.title = "Highlight: any matches (every cell with the value) — click for same column matches";
+  }
+}
+function toggleHltMode() {
+  optHltSameCipher = !optHltSameCipher;
+  syncHltModeBtn();
+  // re-render with the current highlight-box content
+  if (document.getElementById("highlightBox").value.replace(/ +/g, " ").trim() !== "") {
+    if (!optHltSameCipher) { autoHistoryTableLayout(); updateHistoryTable(); }
+    else { updateHistoryTableSameCiphMatch(); }
   }
   document.getElementById("phraseBox").focus();
 }
@@ -663,9 +695,9 @@ function conf_SOM() {
   } else {
     alphaHlt = 0.15;
   }
-  if (optFiltCrossCipherMatch) {
+  if (!optHltSameCipher) {
     updateTables();
-  } else if (optFiltSameCipherMatch) {
+  } else {
     updateHistoryTableSameCiphMatch();
   }
 }
@@ -2235,8 +2267,8 @@ function updateHistoryTable(hltBoolArr) {
 
         // if highlight mode is on
         if (hltMode) {
-          // if cross cipher match and highlight box doesn't include number
-          if (optFiltCrossCipherMatch && !highlt_num.includes(gemVal)) {
+          // "all matches" highlight mode: dim any cell whose value isn't in the box
+          if (!optHltSameCipher && !highlt_num.includes(gemVal)) {
             col = optColoredCiphers
               ? "hsl(" +
                 curCiph.H +

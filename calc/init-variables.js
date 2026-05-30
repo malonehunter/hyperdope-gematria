@@ -494,7 +494,7 @@ $(document).ready(function(){
 				autoHistoryTableLayout();
 				updateHistoryTable();
 			}
-		} else if (optFiltCrossCipherMatch) { autoHistoryTableLayout(); updateHistoryTable(); } else { updateHistoryTableSameCiphMatch(); }
+		} else if (!optHltSameCipher) { autoHistoryTableLayout(); updateHistoryTable(); } else { updateHistoryTableSameCiphMatch(); }
     });
 	
 	$("body").on("click", "td.hC", function () { // Cipher Name in history table (normal mode)
@@ -568,7 +568,7 @@ $(document).ready(function(){
 	$("body").on("click", ".tC", function (e) { // tC - history table cell
 		//console.log($(this).find(".gV").html()); // inner html of .gV found in "this"
 		var val = $(this).find(".gV").html(); // get gematria value from element
-		if(ctrlIsPressed) { // Ctrl + Left Click - toggle value inside highlight box
+		if(ctrlIsPressed || e.metaKey) { // Ctrl+Click (Win/Linux) or Cmd+Click (Mac) - toggle value inside highlight box
 			tdToggleHighlight(parseInt(val.trim(), 10)); // remove spaces, parse as integer and add (remove) to highlight box
 		} else { // Left Click only - temporary blinking effect
 			$( "table.HistoryTable td.tC > span:contains('"+val+"')" ).toggleClass('highlightValueBlink'); // add blinking effect

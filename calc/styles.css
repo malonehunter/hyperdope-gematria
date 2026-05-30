@@ -1034,6 +1034,21 @@ body {
 #autoMatchBtn.matchOff {
   opacity: 0.35;
 }
+#hltModeBtn {
+  background-color: var(--input-bg-accent);
+  padding: 0em;
+  margin: 0em 0em 0em 0.3em;
+  min-width: 32px;
+  max-width: 32px;
+  color: hsl(148, 65%, 58%);
+  font-size: 110%;
+  line-height: 1;
+  text-align: center;
+  vertical-align: middle;
+}
+#hltModeBtn.hltModeOff {
+  opacity: 0.35;
+}
 #calcNotification {
   position: absolute;
   left: 50%;
@@ -1056,6 +1071,7 @@ body {
 #queryDBbtn:hover,
 #enterPhraseBtn:hover,
 #autoMatchBtn:hover,
+#hltModeBtn:hover,
 .queryPageBtn:hover {
   background-color: var(--btn-hover-accent);
 }
@@ -1067,6 +1083,7 @@ body {
 #queryDBbtn:active,
 #enterPhraseBtn:active,
 #autoMatchBtn:active,
+#hltModeBtn:active,
 .queryPageBtn:active {
   background-color: var(--btn-active-accent);
 }

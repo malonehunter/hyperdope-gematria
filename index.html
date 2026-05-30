@@ -11,16 +11,16 @@
   <!-- Android Web App - Add to Home Screen -->
   <link rel="manifest" href="manifest.json" />
 
-  <script src="config.js?v=8"></script>
+  <script src="config.js?v=10"></script>
   <script src="lib/jquery.min.js?v=2"></script>
   <!-- html2canvas v1.0.0-alpha.12 -->
 
   <script src="calc/gematria.js?v=2"></script>
-  <script src="calc/calc.js?v=6"></script>
-  <script src="calc/init-variables.js?v=5"></script>
+  <script src="calc/calc.js?v=13"></script>
+  <script src="calc/init-variables.js?v=7"></script>
   <script src="calc/ciphers.js?v=5"></script>
 
-  <link rel="stylesheet" type="text/css" href="calc/styles.css?v=5" />
+  <link rel="stylesheet" type="text/css" href="calc/styles.css?v=9" />
 
   <script>
     window.onpaint = function () {
@@ -121,6 +121,13 @@
           spellcheck="false"
           autocomplete="off"
           placeholder="highlight #s"
+        /><input
+          id="hltModeBtn"
+          class="hltModeOff"
+          type="button"
+          title="Highlight: any matches (every cell with the value) — click for same column matches"
+          value="▼"
+          onclick="toggleHltMode()"
         /><span id="clearFilterButton"></span>
       </div>
 
@@ -141,7 +148,7 @@
 
   <script src="calc/breakdown.js?v=2"></script>
 
-  <script src="calc/highlighter.js?v=2"></script>
+  <script src="calc/highlighter.js?v=3"></script>
   <script src="calc/export.js?v=2"></script>
   <script src="calc/export-csv.js?v=2"></script>
   <script src="calc/num-prop.js?v=2"></script>
@@ -183,6 +190,8 @@
       var amb = document.getElementById("autoMatchBtn");
       amb.classList.remove("hideValue");
       if (!autoMatchEnabled) amb.classList.add("matchOff");
+      // Sync hltModeBtn to the (possibly restored from localStorage) optHltSameCipher value.
+      if (typeof syncHltModeBtn === "function") syncHltModeBtn();
     }
 
     // Background: fetch the full 69-cipher set, then swap it in for the lite set.

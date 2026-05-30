@@ -1,5 +1,36 @@
 # Changelog
 
+## v2.4 — Highlight-Mode Decouple Toggle & Settings Persistence
+
+### Added
+- **Highlight-mode toggle (▼)** next to the highlight box, styled like the ⚡ auto-match
+  button (dim/lit on/off). Decouples the history-table highlight semantics from the
+  Cross/Same query match mode:
+  - Dim (default) = "any matches" — light every cell whose value you typed (cross-style)
+  - Lit (toggled) = "same column matches only" — light only values that repeat within a
+    cipher column (same-cipher-pairing)
+  - The Cross/Same checkboxes in the options panel now affect only the query/modal +
+    export (as the names suggest); the history-table highlight has its own switch.
+- **Settings persistence** for two opt flags that weren't round-tripping through
+  `localStorage`:
+  - `optHltSameCipher` (the new toggle) — added to `calcOptionsArr`
+  - `autoMatchEnabled` (the ⚡ button state) — was the lone outlier among the opt flags;
+    every other one persisted but this one re-read the device-aware default each page
+    load. Now persists; the device-aware default still applies for *first* visit per
+    device, then the user's choice sticks.
+- **Cmd+click on macOS** for the "add value to highlight box" power-user gesture. macOS
+  hard-routes Ctrl+click to a `contextmenu` event (firing the right-click hideValue
+  toggle instead of the Ctrl+click branch), so the existing gesture was unreachable for
+  Mac users. The click handler now accepts `e.metaKey` alongside `ctrlIsPressed`.
+
+### Notes
+- Plain left-click on a history value still triggers the cross-table blink sweep
+  regardless of the new toggle — that's the quick "where else does this number appear?"
+  gesture and predates the match-mode flags. The new toggle governs persistent highlight
+  semantics (typing into the box, Cmd/Ctrl+click); the ephemeral blink stays mode-free.
+- No database changes — the `db.json` / `db_lite.json` Release assets from v2.3 are still
+  valid; v2.4 ships no new assets.
+
 ## v2.3 — Proper-Case Normalization & +6,421 Common Words
 
 ### Changed
