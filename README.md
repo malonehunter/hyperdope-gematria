@@ -122,4 +122,6 @@ Append phrases as new lines to `db.txt`. File must start with `CREATE_GEMATRO_DB
 
 ## License
 
-MIT
+This project is licensed under the **GNU General Public License v2.0** — see [`LICENSE`](LICENSE).
+
+It builds on the original Gematro project (open-source; the original repository has since been deleted, so the exact upstream license isn't independently verifiable — this fork adopted **GPLv2** when first enhanced and published). It also incorporates 11 ciphers ported from [Alektryon's fork](https://github.com/Alektryon/gematria), released under the **GNU Affero General Public License v3.0 (AGPLv3)** and attributed in `CHANGELOG.md` and `calc/ciphers.js`. Because it incorporates AGPL (copyleft) code, the combined work is distributed under copyleft terms and is **not** MIT-licensed.
