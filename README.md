@@ -59,7 +59,7 @@ git pull origin master
 
 ## Database
 
-**216,088 curated entries** (Proper-Case normalized) — cleaned, enriched, and restored from the original user-search database.
+**229,943 curated entries** (Proper-Case normalized) — cleaned, enriched, restored from the original user-search database, and extended with NetVoid's 2026 manual review additions.
 
 - Proper-Case normalization with acronym / Roman-numeral / mixed-case protection (see `tools/normalize_caps.py`), plus +6,421 common words from the original 20K wordlist (v2.3)
 - Specialty sets (Liber AL, Latin, Roman numerals, spelled-out numbers, Illuminati/esoteric terms)

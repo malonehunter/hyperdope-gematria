@@ -1,5 +1,38 @@
 # Changelog
 
+## v2.5 — NetVoid 2026 Manual Review Merge & Calibrated Junk Filter
+
+### Added
+- **+13,855 entries from NetVoid's 2026 manual curation pass** — modern political/conspiracy
+  phrases, historical event references, pop culture, esoteric concepts, tech/AI. Sourced from
+  `CYPHERS_CLEANED_DDB_2026.txt` which she's manually reviewing (A–R complete, S–Z in
+  progress). These are her truly-new additions since her 2023 starting db (14,520 total),
+  filtered through our calibrated junk rubric.
+- **`tools/classify_candidates.py`** — new calibrated junk-rubric tool. Permissive on modern
+  proper nouns, brand names, acronyms (NASA/MAGA/COVID/AI/...), historical-event references,
+  and event-phrases with digits (`BLM 2020`, `COVID-19 Policy`, `Election Trump 2024`). Drops
+  only shared-consensus junk: pure foreign-script, single-letter pairs, keyboard-mash
+  patterns, bare spelled-numbers (no `[N]` annotation), repeated-word patterns, pure-date
+  constructions with year, long sentences with very low dictionary density. Drop rate on
+  NetVoid's 13,861 truly-new additions: 0.04% (6 entries). Reusable — takes any wordlist,
+  emits keep/drop decisions to JSONL or a plain keep-list. Designed for ecosystem reciprocity
+  so any merge in either direction stays clean.
+
+### Fixed
+- **`tools/normalize_caps.py` no longer mangles modern acronyms via dict-fallthrough.** The
+  old all-caps-multi-letter rule fell through to Title Case when the lowercase form was in
+  `/usr/share/dict/words` (web2 / Webster's 2nd, 1934), but web2 includes obscure
+  historical/Latin/scientific terms that overlap with modern acronyms: `maga`, `covid`, `la`,
+  `ai`, `id`, `us`, `it`, `ice` were all silently in the dict and being treated as "shouted
+  dict words" to title-case. Rule simplified to: all-caps multi-letter token → **always
+  preserve**. Trust the input. 462 acronyms preserved correctly in the NetVoid merge. The
+  trade-off — genuinely shouted normal words like `A BIG WIN FOR US` stay all-caps instead of
+  becoming Title Case — is rare in curated db entries and clearly the lesser evil.
+
+### Changed
+- Database: **216,088 → 229,943 entries** (+6.4%). `db.json` ~74.8 MB raw / ~32.0 MB gz.
+  `db_lite.json` ~18.4 MB raw / ~7.4 MB gz. Lite paint still ~2s. `databaseVersion` 3 → 4.
+
 ## v2.4 — Highlight-Mode Decouple Toggle & Settings Persistence
 
 ### Added

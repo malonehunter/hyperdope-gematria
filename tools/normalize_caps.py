@@ -46,13 +46,16 @@ def xform_word(w):
     # mixed-case (an uppercase letter past the first, but NOT all-caps): preserve iPhone / eBay / McDonald
     if w != w.lower() and w != w.upper() and not (w[0].isupper() and w[1:] == w[1:].lower()):
         return w
-    # all-caps multi-letter token
+    # all-caps multi-letter token: preserve as-is. This single rule covers acronyms
+    # (NASA, FBI, MAGA, COVID), Roman numerals (XXXIII), modern shortforms (AI, LA, ID,
+    # KSI), and brand/band names (AC DC). We used to fall through to Title Case when the
+    # lowercased token was in /usr/share/dict/words, but that dict knows 'maga', 'covid',
+    # 'la', 'ai', 'id', 'us', 'it', 'ice' as words and was mangling 462 modern acronyms
+    # in NetVoid's 2026 additions. Trust the input: if it's typed all-caps, keep it.
+    # Cost: 'A BIG WIN FOR US' stays loud instead of becoming 'A Big Win For Us' — rare
+    # in curated db entries and clearly the lesser evil.
     if w == w.upper() and len(letters) >= 2:
-        if is_roman(letters):
-            return w                       # XXXIII -> keep
-        if letters.lower() not in DICT:
-            return w                       # NASA / FBI / BMX -> keep (acronym)
-        # else: a real word shouted (BIG) -> fall through to Title Case
+        return w
     # lowercase/mixed Roman numeral that isn't a real word: uppercase it (mmxlvi -> MMXLVI)
     if len(letters) >= 2 and is_roman(letters) and letters.lower() not in DICT:
         return w.upper()
