@@ -1,5 +1,21 @@
 # Changelog
 
+## Unreleased (after v2.5)
+
+### Added
+- **Based Atlanteanism** and **Based Atlanteanism Denovated** (Alphanumeric category) — from NetVoid's
+  cyphers.news: Standard − Alphanumeric Qabbala with digits counting 0, and the same divided by 9.
+  Values verified against the derivation identity. Disabled by default; db.json gains two columns
+  (`databaseVersion` 5 → 6).
+
+### Changed / fixed
+- Cipher and settings import no longer uses `eval()`: exported cipher files and the localStorage
+  settings copy are parsed and shape-checked (`parseCipherArgs` / `cipherFromExport`), option names
+  are whitelisted, values must be JSON scalars. Export format unchanged for booleans/numbers.
+- `manifest.json` icons pointed at a non-existent `calc-logo-36.png`; now 32/48.
+- Database v2.5.1 (234,751 entries — trim Phase A: consensus junk dropped, legacy acronyms restored,
+  NetVoid v2 additions folded in) ships with the next release.
+
 ## v2.5 — NetVoid 2026 Manual Review Merge & Calibrated Junk Filter
 
 ### Added

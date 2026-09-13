@@ -39,7 +39,7 @@ var CALC_CONFIG = {
   databaseJsonUrl: "db.json",           // full set — loaded in background
   databaseLiteJsonUrl: "db_lite.json",  // lite set (common ciphers) — loaded first for fast paint
   databaseTxtUrl: "db.txt",
-  databaseVersion: 1,                   // bump on each db.json regen -> cache-busts the db fetch (?v=N)
+  databaseVersion: 2,                   // bump on each db.json regen -> cache-busts the db fetch (?v=N)
 
   // --- Defaults ---
   autoMatchDesktop: true,

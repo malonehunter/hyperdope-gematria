@@ -1490,6 +1490,26 @@ cipherList = [
     false,
     false
   ),
+  // --- from NetVoid (cyphers.news, 2026-09) — her "CCRU" group = our Alphanumeric family ------------
+  // Based Atlanteanism = Standard − Alphanumeric Qabbala, digits count 0 (her derivation descriptor
+  // {from:"Standard", minus:"Alphanumeric Qabbala"}); values as published, verified against the identity.
+  new cipher(
+    "Based Atlanteanism",
+    "Alphanumeric",
+    156, 80, 62,
+    [48,49,50,51,52,53,54,55,56,57,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122],
+    [0,0,0,0,0,0,0,0,0,0,-9,-9,-9,-9,-9,-9,-9,-9,-9,-9,0,9,18,27,36,45,54,63,72,171,270,369,468,567,666,765],
+    true, false, false
+  ),
+  // Based Atlanteanism Denovated = (Standard − Alphanumeric Qabbala) / 9 (her {…, over: 9}).
+  new cipher(
+    "Based Atlanteanism Denovated",
+    "Alphanumeric",
+    172, 100, 62,
+    [48,49,50,51,52,53,54,55,56,57,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122],
+    [0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,0,1,2,3,4,5,6,7,8,19,30,41,52,63,74,85],
+    true, false, false
+  ),
   new cipher(
     "Kabbalistic (Sepharial)",
     "Extra",
