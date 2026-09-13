@@ -217,3 +217,28 @@ class cipher { // cipher constructor class
 	}
 
 }
+// ================= Cipher import (parsed, never eval'd) =================
+// Exported cipher files (exportCiphers / exportCiphersDB), the localStorage settings copy and
+// pasted "// ciphers.js" files carry each cipher as `new cipher(<args>)`. The <args> text is
+// JSON-compatible by construction of the exporter: "name","category",H,S,L,[charcodes],[values],
+// diacriticsAsRegular,enabled,caseSensitive. It used to be eval()'d — imported files and the
+// localStorage copy (which any XSS could have written) could execute code. Now it is parsed and
+// shape-checked; anything that is not exactly a cipher argument list is rejected (null).
+function parseCipherArgs(argStr) {
+	var args
+	try { args = JSON.parse("[" + argStr + "]") } catch (e) { return null }
+	if (!Array.isArray(args) || args.length < 7 || args.length > 10) return null
+	var isIntArr = function (a) { return Array.isArray(a) && a.every(function (x) { return Number.isInteger(x) }) }
+	var isBoolOrAbsent = function (b) { return b === undefined || typeof b === "boolean" }
+	if (typeof args[0] !== "string" || typeof args[1] !== "string") return null // name, category
+	if (![2, 3, 4].every(function (i) { return typeof args[i] === "number" && isFinite(args[i]) })) return null // H, S, L
+	if (!isIntArr(args[5]) || !isIntArr(args[6]) || args[5].length !== args[6].length) return null // charcodes, values
+	if (![7, 8, 9].every(function (i) { return isBoolOrAbsent(args[i]) })) return null // flags (constructor defaults apply when absent)
+	return args
+}
+
+function cipherFromExport(argStr) { // → a cipher, or null when the text is not a well-formed cipher argument list
+	var a = parseCipherArgs(argStr)
+	if (a === null) return null
+	return new cipher(a[0], a[1], a[2], a[3], a[4], a[5], a[6], a[7], a[8], a[9])
+}

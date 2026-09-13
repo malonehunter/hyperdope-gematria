@@ -241,10 +241,10 @@ function exportCiphersDB(expAllCiph = false) {
 	return out
 }
 
-function exportCalcOptions() {
+function exportCalcOptions() { // one JSON string per option: "name = value" (same text as before for booleans/numbers); values read by name, never eval'd
 	var o = "calcOptions = [\n\t"
 	for (var i = 0; i < calcOptionsArr.length; i++) {
-		o += "\x22"+eval(calcOptionsArr[i])+"\x22,\n\t" // quotes - \x22
+		o += JSON.stringify(calcOptionsArr[i]+" = "+JSON.stringify(window[calcOptionsArr[i]]))+",\n\t"
 	}
 	o = o.slice(0,-3) + "\n]\n" // remove comma, new line, tab; new line, close array, new line
 	return o

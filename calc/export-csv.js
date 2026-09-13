@@ -98,10 +98,13 @@ function importFileAction(file, hasLocalFile) {
 			file = ciph[0].replace(/(\t|  +|\r|\n)/g, "").slice(10,-1) // remove tabs, consequtive spaces, line breaks - "new cipher" at start, last bracket
 			ciph = file.split(",new cipher") // split string into array
 
-			cipherList = []; cCat = []; defaultCipherArray = [] // clear arrays with previously defined ciphers, categories, default ciphers
+			var imported = [] // parse every cipher first — one malformed entry aborts the import and keeps the current ciphers
 			for (n = 0; n < ciph.length; n++) {
-				cipherList.push(eval("new cipher("+ciph[n].slice(1,-1)+")")) // remove parethesis, evaluate string as javascript code
+				var c = cipherFromExport(ciph[n].slice(1,-1)) // remove parentheses; parsed as data, never eval'd
+				if (c === null) { displayCalcNotification("Cipher import failed: malformed cipher #"+(n+1), 3000); return }
+				imported.push(c)
 			}
+			cipherList = imported; cCat = []; defaultCipherArray = [] // replace previously defined ciphers, categories, default ciphers
 			document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
 			
 			initCalc() // reinit.
@@ -148,10 +151,13 @@ function importFileAction(file, hasLocalFile) {
 			file = ciph[0].replace(/(\t|  +|\r|\n)/g, "").slice(10,-1) // remove tabs, consequtive spaces, line breaks - "new cipher" at start, last bracket
 			ciph = file.split(",new cipher") // split string into array
 
-			cipherList = []; cCat = []; defaultCipherArray = [] // clear arrays with previously defined ciphers, categories, default ciphers
+			var imported = [] // parse every cipher first — one malformed entry aborts the import and keeps the current ciphers
 			for (n = 0; n < ciph.length; n++) {
-				cipherList.push(eval("new cipher("+ciph[n].slice(1,-1)+")")) // remove parethesis, evaluate string as javascript code
+				var c = cipherFromExport(ciph[n].slice(1,-1)) // remove parentheses; parsed as data, never eval'd
+				if (c === null) { displayCalcNotification("Cipher import failed: malformed cipher #"+(n+1), 3000); return }
+				imported.push(c)
 			}
+			cipherList = imported; cCat = []; defaultCipherArray = [] // replace previously defined ciphers, categories, default ciphers
 			document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
 			initCalc() // reinit
 			updateTables() // update tables
@@ -240,9 +246,17 @@ function isJsonString(str) {
     return true;
 }
 
-function importCalcOptions(calcOpt) { // load user options
+function importCalcOptions(calcOpt) { // load user options: "name = value" strings; names must be in calcOptionsArr, values are JSON scalars — parsed, never eval'd
 	if (typeof calcOpt !== 'undefined' && calcOpt !== null) {
-		for (var i = 0; i < calcOpt.length; i++) eval(calcOpt[i])
+		for (var i = 0; i < calcOpt.length; i++) {
+			if (typeof calcOpt[i] !== "string") continue
+			var m = calcOpt[i].match(/^\s*([A-Za-z_][A-Za-z0-9_]*)\s*=\s*([\s\S]+?)\s*$/)
+			if (m === null || calcOptionsArr.indexOf(m[1]) === -1) continue // unknown option name → ignored
+			var v
+			try { v = JSON.parse(m[2]) } catch (e) { continue } // not a JSON scalar → ignored
+			if (typeof v !== "boolean" && typeof v !== "number" && typeof v !== "string") continue
+			window[m[1]] = v // the option globals are top-level `var`s, i.e. window properties
+		}
 	}
 	toggleCodeRain() // update coderain
 }

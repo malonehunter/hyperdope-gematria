@@ -32,10 +32,13 @@ function restoreCalcSettingsLocalStorage(silentMode = false) {
 	file = ciph[0].replace(/(\t|  +|\r|\n)/g, "").slice(10,-1) // remove tabs, consequtive spaces, line breaks - "new cipher" at start, last bracket
 	ciph = file.split(",new cipher") // split string into array
 
-	cipherList = []; cCat = []; defaultCipherArray = [] // clear arrays with previously defined ciphers, categories, default ciphers
+	var imported = [] // parse every cipher first — one malformed entry aborts the import and keeps the current ciphers
 	for (n = 0; n < ciph.length; n++) {
-		cipherList.push(eval("new cipher("+ciph[n].slice(1,-1)+")")) // remove parethesis, evaluate string as javascript code
+		var c = cipherFromExport(ciph[n].slice(1,-1)) // remove parentheses; parsed as data, never eval'd
+		if (c === null) { displayCalcNotification("Cipher import failed: malformed cipher #"+(n+1), 3000); return }
+		imported.push(c)
 	}
+	cipherList = imported; cCat = []; defaultCipherArray = [] // replace previously defined ciphers, categories, default ciphers
 	document.getElementById("calcOptionsPanel").innerHTML = "" // clear menu panel
 	initCalc() // reinit
 	updateTables() // update tables
