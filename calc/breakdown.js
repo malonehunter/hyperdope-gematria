@@ -81,7 +81,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 				simplePhr = sVal() // display full phrase
 			}
 			oStart += '<div id="SimpleBreak">'
-			oStart += '<span class="breakPhrase">' + simplePhr + '</span><span class="breakPhrase"> = </span><span class="breakSum">' + curCipher.sumArr.reduce(getSum) + ' </span>' // add all values in array
+			oStart += '<span class="breakPhrase">' + escHtml(simplePhr) + '</span><span class="breakPhrase"> = </span><span class="breakSum">' + curCipher.sumArr.reduce(getSum) + ' </span>' // add all values in array
 			oStart += '<span class="breakCipher"><font style="'+curCiphCol+'"> (' + curCipher.cipherName + gemCalcModeLabel(curCipher) + ')</font></span>'
 		}
 
@@ -248,7 +248,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 		var chartClass = 'SimpleBreakChart'
 		if (curCipher.cp.length > chLimit) chartClass = 'SimpleBreakChartLong'
 		o = '<tr><td colspan=' + tdCount + '>'
-		o += '<div class="'+chartClass+'"><span class="breakPhraseChart">' + simplePhr + ' = ' + curCipher.sumArr.reduce(getSum) + ' </span>' // add all values in array
+		o += '<div class="'+chartClass+'"><span class="breakPhraseChart">' + escHtml(simplePhr) + ' = ' + curCipher.sumArr.reduce(getSum) + ' </span>' // add all values in array
 		o += '<span class="breakPhraseChartCiphName" style="'+curCiphCol+'">(' + curCipher.cipherName + gemCalcModeLabel(curCipher) + ')</span></div></td></tr>'
 		$('#BreakTableContainer').prepend(o) // insert in the beginning of the table
 	}

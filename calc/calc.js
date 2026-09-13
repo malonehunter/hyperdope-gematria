@@ -1763,6 +1763,19 @@ function updateEnabledCipherCount() {
   }
 }
 
+// Entity-escape user-supplied text before it enters an innerHTML string — for the HTML body AND
+// for values inside double-quoted attributes (escapes & < > " '). Store phrases RAW; escape only
+// here at render. Added 2026-09-13 (the calc had no escaping; phrases reached the DOM raw). Keep
+// every user-text sink routed through this.
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function sVal() {
   return document.getElementById("phraseBox").value.trim(); // get value, remove spaces from both sides
 }
@@ -2248,11 +2261,11 @@ function updateHistoryTable(hltBoolArr) {
       // comment first, phrase without comment and leading/trailing spaces
       dispPhrase =
         '<span class="pCHT">' +
-        tmpComment +
+        escHtml(tmpComment) +
         "</span>" +
-        sHistory[x].replace(/\[.+\]/g, "").trim();
+        escHtml(sHistory[x].replace(/\[.+\]/g, "").trim());
     } else {
-      dispPhrase = sHistory[x];
+      dispPhrase = escHtml(sHistory[x]);
     }
     ms += '<tr><td class="hP" data-ind="' + x + '">' + dispPhrase + "</td>"; // hP - history phrase, add data index
     var col = ""; // value color

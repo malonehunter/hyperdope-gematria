@@ -249,7 +249,7 @@ function updateDatabaseQueryTable(stPos = 0, dItems, scrollBarEvent = false) { /
 		ms += '<div id="queryMinBtn">_</div>'
 		ms += '</div>'
 		ms += '<input type="range" min="0" max="'+sliderMax+'" value="'+curSliderPos+'" class="qSlider" id="queryScrollbar">' // slider/scrollbar
-		ms += '<input id="querySearchInput" type="text" spellcheck="false" autocomplete="off" value="'+searchBarValue+'" placeholder="Find...">' // search bar
+		ms += '<input id="querySearchInput" type="text" spellcheck="false" autocomplete="off" value="'+escHtml(searchBarValue)+'" placeholder="Find...">' // search bar
 		ms += '<table id="QueryTable" class="HistoryTable" data-startpos='+stPos+' data-dispitems='+dItems+'>'
 		ms += '<tbody>'
 	} else { // scrollbar used
@@ -296,12 +296,12 @@ function updateDatabaseQueryTable(stPos = 0, dItems, scrollBarEvent = false) { /
 				tmpComment = commentMatch[0]
 			}
 			// comment first, phrase without comment and leading/trailing spaces
-			dispPhrase = (encodingMenuOpened) ? '<span class="pCHT">'+tmpComment+'</span>' + queryResult[x].replace(/\[.+\]/g, '').trim() : '<span class="pCHT">'+tmpComment+'</span>' + queryResult[x][1].replace(/\[.+\]/g, '').trim()
+			dispPhrase = (encodingMenuOpened) ? '<span class="pCHT">'+escHtml(tmpComment)+'</span>' + escHtml(queryResult[x].replace(/\[.+\]/g, '').trim()) : '<span class="pCHT">'+escHtml(tmpComment)+'</span>' + escHtml(queryResult[x][1].replace(/\[.+\]/g, '').trim())
 		} else {
-			dispPhrase = (encodingMenuOpened) ? queryResult[x] : queryResult[x][1]
+			dispPhrase = (encodingMenuOpened) ? escHtml(queryResult[x]) : escHtml(queryResult[x][1])
 		}
 		var fullPhrase = (encodingMenuOpened) ? queryResult[x] : queryResult[x][1]
-		ms += '<tr><td class="hPQ" data-ind="'+x+'" title="'+fullPhrase.replace(/"/g, '&quot;')+'">' + dispPhrase + '</td>' // phrase at index 1
+		ms += '<tr><td class="hPQ" data-ind="'+x+'" title="'+escHtml(fullPhrase)+'">' + dispPhrase + '</td>' // phrase at index 1 (title + body both escaped)
 
 		valPos = 2 // reset position for new phrase
 		for (y = 0; y < gemArrCiph.length; y++) { // gemArrCiph contains indices of ciphers used for query
