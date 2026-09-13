@@ -38,6 +38,7 @@ var numericalMode // boolean flag, match numbers instead of phrase gematria
 var userDB = [] // imported database
 var userDBlive = [] // imported live database (phrases only)
 var queryResult = [] // matching phrases
+var lastQueryPhrase = '' // the phrase that produced the OPEN matches box, so a cipher toggle can refresh it in place
 var queryResultInitial = [] // matching phrases (used to reset search bar results)
 var precalcDBLoaded = false // if precalculated database is loaded, disable cipher rearrangement
 var searchBarValue = '' // search bar value

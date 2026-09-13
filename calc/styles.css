@@ -1018,9 +1018,16 @@ body {
 }
 #queryDBbtn {
   background-color: var(--input-bg-accent);
+  /* center the "\1F52E Query" value both axes: border-box so the 1px border doesn't bias width,
+     symmetric zero padding, and an explicit line-height so the emoji's tall line box doesn't push
+     the baseline down (was reading as extra top/left padding). */
+  box-sizing: border-box;
   padding: 0em;
   margin: 0em 0.3em;
   width: 75px;
+  text-align: center;
+  line-height: 1;
+  vertical-align: middle;
 }
 #enterPhraseBtn,
 #autoMatchBtn {

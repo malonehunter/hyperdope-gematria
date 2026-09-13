@@ -3,6 +3,7 @@
 function queryDatabase() {
 	var cVal
 	if(sVal() == "") return // empty input
+	lastQueryPhrase = sVal() // remember what this box is showing, so a later cipher toggle can refresh it
 
 	if (liveDatabaseMode == true) calcLiveDatabase(userDBlive) // calculate gematria for live database for enabled ciphers
 
@@ -75,6 +76,29 @@ function queryDatabase() {
 		if (!fullDBLoaded && queryHadUnloadedCipher) { _ind.title = "loading all cyphers…"; _ind.style.display = "inline" }
 		else { _ind.style.display = "none" }
 	}
+}
+
+var _refreshingQuery = false // reentrancy guard: updateTables -> refreshOpenQuery -> queryDatabase must not recurse
+function refreshOpenQuery() {
+	// Called after any cipher-set change (updateTables). If a matches box is open and maximized,
+	// re-run the SAME query so a newly enabled cipher adds its column (and re-ranks) with no
+	// resubmit — and a newly disabled cipher drops its column. No-op when no box is open.
+	if (_refreshingQuery) return
+	var qa = document.getElementById("queryArea")
+	if (qa === null || $("#queryArea").hasClass("minimizeQuery")) return // only when open + not minimized
+	if (lastQueryPhrase === "") return
+	var box = document.getElementById("phraseBox")
+	var savedInput = box.value          // preserve whatever the user may be typing now
+	var savedFilter = searchBarValue    // preserve the find-in-results filter
+	_refreshingQuery = true
+	try {
+		box.value = lastQueryPhrase       // queryDatabase reads sVal(); point it at the open box's phrase
+		queryDatabase()                   // rebuilds the table for the current enabled-cipher set
+	} finally {
+		box.value = savedInput            // restore silently (direct assignment fires no input event)
+		_refreshingQuery = false
+	}
+	if (savedFilter) searchBarDBQuery(savedFilter) // re-apply the filter over the fresh matches
 }
 
 function clearDatabaseQueryTable() {

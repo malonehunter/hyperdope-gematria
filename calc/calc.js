@@ -1743,6 +1743,7 @@ function updateTables(updColorLayout = true) {
   autoHistoryTableLayout(); // use Compact History if necessary
   updateHistoryTable(); // update history table
   updateWordBreakdown(breakCipher, true); // update word breakdown and choose first enabled cipher
+  if (typeof refreshOpenQuery === "function") refreshOpenQuery(); // refresh an open matches box in place after a cipher-set change
 }
 
 function autoHistoryTableLayout() {
