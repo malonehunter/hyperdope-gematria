@@ -443,7 +443,7 @@ function displayCipherCatDetailed(curCat) {
       } // checkbox state
       o +=
         '<tr><td><label class="chkLabel ciphCheckboxLabel2">' +
-        cipherList[i].cipherName +
+        escHtml(cipherList[i].cipherName) +
         '<input type="checkbox" id="cipher_chkbox' +
         i +
         '" onclick="toggleCipher(' +
@@ -1077,7 +1077,7 @@ function toggleColorControlsMenu(redraw = false) {
         if (cipherList[i].enabled) {
           o +=
             '<td><span class="ciphCheckboxLabel">' +
-            cipherList[i].cipherName +
+            escHtml(cipherList[i].cipherName) +
             "</span></td>";
           o +=
             '<td><input type="number" step="2" min="-360" max="360" value="' +
@@ -1965,7 +1965,7 @@ function updateEnabledCipherTable() {
             '<td class="phraseGemCiphName" style="' +
             cur_col +
             '">' +
-            cipherList[i].cipherName +
+            escHtml(cipherList[i].cipherName) +
             "</td>";
           // o += '<td class="phraseGemValueOdd" style="'+cur_col+'">'+cipherList[i].calcGematria(phr)+'</td>'
           o +=
@@ -1990,7 +1990,7 @@ function updateEnabledCipherTable() {
             '<td class="phraseGemCiphName" style="' +
             cur_col +
             '">' +
-            cipherList[i].cipherName +
+            escHtml(cipherList[i].cipherName) +
             "</td>";
           ciph_in_row++;
           odd_col = true;
@@ -2231,7 +2231,7 @@ function updateHistoryTable(hltBoolArr) {
               'px;"><span class="hCV2" style="' +
               curCiphCol +
               '">' +
-              cipherList[z].cipherName +
+              escHtml(cipherList[z].cipherName) +
               "</span></td>"; // color of cipher displayed in the table
           } else {
             ms +=
@@ -2242,7 +2242,7 @@ function updateHistoryTable(hltBoolArr) {
               "px; min-width: " +
               calcCipherNameWidthPx(cipherList[z].cipherName) +
               'px;">' +
-              cipherList[z].cipherName +
+              escHtml(cipherList[z].cipherName) +
               "</td>"; // color of cipher displayed in the table
           }
         }

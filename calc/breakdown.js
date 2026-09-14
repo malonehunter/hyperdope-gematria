@@ -82,7 +82,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 			}
 			oStart += '<div id="SimpleBreak">'
 			oStart += '<span class="breakPhrase">' + escHtml(simplePhr) + '</span><span class="breakPhrase"> = </span><span class="breakSum">' + curCipher.sumArr.reduce(getSum) + ' </span>' // add all values in array
-			oStart += '<span class="breakCipher"><font style="'+curCiphCol+'"> (' + curCipher.cipherName + gemCalcModeLabel(curCipher) + ')</font></span>'
+			oStart += '<span class="breakCipher"><font style="'+curCiphCol+'"> (' + escHtml(curCipher.cipherName) + gemCalcModeLabel(curCipher) + ')</font></span>'
 		}
 
 		if (optWordBreakdown == true && curCipher.cp.length <= chLimit ) { // character limit, calculated even if out of screen bounds
@@ -141,7 +141,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 				}
 			}
 			ciphEndClass = (leftToRightBreak) ? "CipherEnd" : "CipherEndRTL"
-			if (optCompactBreakdown == true) o += '</tr><tr><td colspan=' + tdCount + ' class="'+ciphEndClass+'"><font style="'+curCiphCol+'">' + curCipher.cipherName + gemCalcModeLabel(curCipher) + '</font></td></tr></table></div>'
+			if (optCompactBreakdown == true) o += '</tr><tr><td colspan=' + tdCount + ' class="'+ciphEndClass+'"><font style="'+curCiphCol+'">' + escHtml(curCipher.cipherName) + gemCalcModeLabel(curCipher) + '</font></td></tr></table></div>'
 			else o += '</tr></tbody></table></div>'
 
 			o = oStart + o // prepend phrase, word/letter count
@@ -227,7 +227,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 			o = oStart + o // prepend phrase, word/letter count
 			if (optCompactBreakdown == true) {
 				o += '<div id="BreakSumLong"><span class="breakSumDark">' + curCipher.sumArr.reduce(getSum) + ' </span>'
-				o += '<span class="breakCipher" style="'+curCiphCol+'">' + curCipher.cipherName + gemCalcModeLabel(curCipher) + '</span></div></div>'
+				o += '<span class="breakCipher" style="'+curCiphCol+'">' + escHtml(curCipher.cipherName) + gemCalcModeLabel(curCipher) + '</span></div></div>'
 			} else {
 				o += '<div style="padding: 0.5em"></div>'
 			}
@@ -249,7 +249,7 @@ function updateWordBreakdown(impName = breakCipher, impBool = false, chartUpd = 
 		if (curCipher.cp.length > chLimit) chartClass = 'SimpleBreakChartLong'
 		o = '<tr><td colspan=' + tdCount + '>'
 		o += '<div class="'+chartClass+'"><span class="breakPhraseChart">' + escHtml(simplePhr) + ' = ' + curCipher.sumArr.reduce(getSum) + ' </span>' // add all values in array
-		o += '<span class="breakPhraseChartCiphName" style="'+curCiphCol+'">(' + curCipher.cipherName + gemCalcModeLabel(curCipher) + ')</span></div></td></tr>'
+		o += '<span class="breakPhraseChartCiphName" style="'+curCiphCol+'">(' + escHtml(curCipher.cipherName) + gemCalcModeLabel(curCipher) + ')</span></div></td></tr>'
 		$('#BreakTableContainer').prepend(o) // insert in the beginning of the table
 	}
 
@@ -322,7 +322,7 @@ function updateCipherChart(curCipher) {
 	o += '<tr>'
 	o += '<td id="spaceChartBtn" style="font-size: 150%; font-weight: 500; '+curCiphFaintCol+'">-</td>' // Space
 	o += '<td id="capsNameChartBtn" colspan="' + (Math.ceil(curCipher.cArr.length / 2) - 2) + '">'
-	o += '<font style="font-size: 150%; font-weight: 500; '+curCiphCol+'">' + curCipher.cipherName + '</font>'
+	o += '<font style="font-size: 150%; font-weight: 500; '+curCiphCol+'">' + escHtml(curCipher.cipherName) + '</font>'
 	o += '</td>'
 	o += '<td id="backspaceChartBtn" style="font-size: 150%; font-weight: 500; '+curCiphFaintCol+'">&#8592;</td>' // Backspace
 	o += '</tr><tr>'
@@ -376,7 +376,7 @@ function updateCipherChartGemCard(impName = breakCipher) {
 	o += '<tbody><tr>'
 
 	o += '<td colspan="' + curCipher.cArr.length + '">'
-	o += '<font style="font-size: 150%; font-weight: 500; '+curCiphCol+'">' + curCipher.cipherName + '</font>'
+	o += '<font style="font-size: 150%; font-weight: 500; '+curCiphCol+'">' + escHtml(curCipher.cipherName) + '</font>'
 	o += '</td></tr><tr>'
 
 	var halfL = curCipher.cArr.length / 2

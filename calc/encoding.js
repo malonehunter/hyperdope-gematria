@@ -44,7 +44,7 @@ function toggleEncodingMenu(updateEncMenu = false, clearValues = false) {
 				if (cipherList[i].enabled == true) { // for each enabled cipher
 					chkVal = (document.getElementById('encCiphVal'+i) !== null) ? document.getElementById('encCiphVal'+i).value : 0
 					chkVal = (clearValues) ? 0 : chkVal // clear values
-					o += '<td><span class="ciphCheckboxLabel">'+cipherList[i].cipherName+'</span></td>'
+					o += '<td><span class="ciphCheckboxLabel">'+escHtml(cipherList[i].cipherName)+'</span></td>'
 					o += '<td><input type="text" value="'+chkVal+'" class="colSlider" id="encCiphVal'+i+'"></td>'
 					o += '<td style="min-width: 16px;"></td>'
 					ciph_in_row++
