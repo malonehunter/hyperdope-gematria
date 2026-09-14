@@ -1,20 +1,33 @@
 # Changelog
 
-## Unreleased (after v2.5)
+## v2.6.0
+
+### Security
+- **Import no longer uses `eval()`.** Imported cipher files and the localStorage settings copy are
+  parsed and shape-checked (`parseCipherArgs` / `cipherFromExport`); option names are whitelisted and
+  values must be JSON scalars. Previously a crafted cipher/settings file could execute arbitrary code
+  on import. Export format is unchanged for booleans/numbers.
+- **All user-supplied text is escaped at render (`escHtml`).** Typed phrases, `[...]` comments,
+  imported history/matches/date file content, and cipher names now render as literal text instead of
+  HTML, across the history and matches tables, the character breakdown and chart, the cipher menu and
+  value tables, and the encoding menu. Prevents cross-site scripting from a crafted phrase, a shared
+  import file, or a cipher named with markup. (The cipher-*file* export keeps the raw name so the
+  export/import round-trip is unaffected.)
+- Added `SECURITY.md` (how to report issues privately).
 
 ### Added
-- **Based Atlanteanism** and **Based Atlanteanism Denovated** (Alphanumeric category) — from NetVoid's
+- **Based Atlanteanism** and **Based Atlanteanism Denovated** (Alphanumeric category), from NetVoid's
   cyphers.news: Standard − Alphanumeric Qabbala with digits counting 0, and the same divided by 9.
-  Values verified against the derivation identity. Disabled by default; db.json gains two columns
-  (`databaseVersion` 5 → 6).
+  Values verified against the derivation. Disabled by default; db.json gains two columns.
+- **Refresh matches on cipher toggle** — enabling/disabling a cipher while the matches box is open
+  updates it in place, no re-submit.
 
-### Changed / fixed
-- Cipher and settings import no longer uses `eval()`: exported cipher files and the localStorage
-  settings copy are parsed and shape-checked (`parseCipherArgs` / `cipherFromExport`), option names
-  are whitelisted, values must be JSON scalars. Export format unchanged for booleans/numbers.
+### Fixed
 - `manifest.json` icons pointed at a non-existent `calc-logo-36.png`; now 32/48.
-- Database v2.5.1 (234,751 entries — trim Phase A: consensus junk dropped, legacy acronyms restored,
-  NetVoid v2 additions folded in) ships with the next release.
+- Query button centering.
+
+> Upgrading: `databaseVersion` is bumped so browsers refetch the wider `db.json`. The trim-Phase-A
+> database (234,751 entries) is a separate future release; this one keeps the v2.5 database content.
 
 ## v2.5 — NetVoid 2026 Manual Review Merge & Calibrated Junk Filter
 
