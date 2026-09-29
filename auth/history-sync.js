@@ -220,75 +220,14 @@ function histSyncCount() {
 
 // ---- wiring -----------------------------------------------------------
 
-// ---- clearing by refreshing twice --------------------------------------
-//
-// There is otherwise no quick way to empty the History Table: it is restored
-// from the account on every load, so reloading to start fresh does the exact
-// opposite of what it looks like it should.
-//
-// Two reloads inside this window is a deliberate enough gesture to mean it,
-// and rare enough by accident that it will not surprise anyone. A single
-// reload behaves exactly as before.
-var HIST_DOUBLE_REFRESH_MS = 5000
-var HIST_REFRESH_KEY = "histLastLoad"
-
-// Returns true when this load is the second of a pair, and consumes the mark
-// so a third reload starts counting again rather than clearing repeatedly.
-//
-// reset-defaults.js normally does the detecting, because the same gesture also
-// resets the settings and the mark can only be read once. This is the fallback
-// for a page that loads the history sync without it.
-function histDoubleRefresh() {
-	if (typeof calcDoubleRefresh !== "undefined") return calcDoubleRefresh
-	var now = Date.now()
-	var last = 0
-	try { last = Number(window.sessionStorage.getItem(HIST_REFRESH_KEY)) || 0 } catch (e) { return false }
-
-	var quick = (last > 0 && now - last < HIST_DOUBLE_REFRESH_MS)
-	try { window.sessionStorage.setItem(HIST_REFRESH_KEY, quick ? "0" : String(now)) } catch (e) {}
-	return quick
-}
-
-// Empties the table here and on the account, so the next load does not simply
-// restore what was just cleared.
-function histClearOnDoubleRefresh() {
-	sHistory = []
-	if (typeof histDisplayOrder !== "undefined") histDisplayOrder = null
-	if (typeof updateTables === "function") updateTables()
-
-	histSyncLastHash = null
-	histSyncClearSaved().catch(function () { /* offline: the local clear still stands */ })
-	// the settings reset runs on the same gesture and announces it for both, so
-	// this only speaks up when it is the whole of what happened
-	if (typeof resetCalcToDefaults !== "function" && typeof displayCalcNotification === "function") {
-		displayCalcNotification("History Table cleared — refreshed twice", 2600)
-	}
-}
-
+// Reload timing is never consent to clear local or saved history.
 $(document).ready(function () {
 	// only the calculator page has a History Table to sync
 	if (typeof sHistory === "undefined") return
 
-	var doubleRefresh = histDoubleRefresh()
-
 	onAuthReady(function (user) {
-		if (user === null) {
-			// signed out, so there is nothing to restore - just empty the table
-			if (doubleRefresh) {
-				sHistory = []
-				if (typeof updateTables === "function") updateTables()
-			}
-			return
-		}
+		if (user === null) return
 		histSyncEnabled = true
-		if (doubleRefresh) {
-			// skip the restore entirely, or it would load the rows and then
-			// delete them, with the table flickering in between
-			histSyncLoaded = true
-			histClearOnDoubleRefresh()
-			histSyncStart()
-			return
-		}
 		histSyncLoad().then(histSyncStart)
 	})
 

@@ -350,7 +350,8 @@ design, so RLS is the actual security boundary, not an extra layer.
 
 ### Sync
 - **History sync** — debounced, hash-compared so unchanged history is not
-  rewritten, with status reporting and a double-refresh clear
+  rewritten, with status reporting. Reloading never clears history or resets the
+  workspace; use the explicit right-click reset control to start over.
 - **Workspace sync** — the full settings object, same hash-compare approach
 
 ## 21. Cross-cutting

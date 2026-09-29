@@ -2,8 +2,7 @@
 //
 // One way back to a known-good calculator: the shipped cyphers, the shipped
 // options, an empty History Table and no Find Matches filter left running.
-// Reachable two ways - by reloading the page twice, and from the right-click
-// menu.
+// Available explicitly from the right-click menu; reloading never resets.
 //
 // The code rain is deliberately left alone. It is the one thing people tune to
 // taste and then leave, and it is never the reason someone wants to start over,
@@ -104,27 +103,3 @@ function resetCalcToDefaults(silent) {
 	}
 	return true
 }
-
-// ---- reloading twice ---------------------------------------------------
-//
-// Detected once, here, because both this reset and the History Table clear act
-// on the same gesture and the mark is consumed when it is read. history-sync.js
-// reads calcDoubleRefresh rather than testing again.
-
-var CALC_DOUBLE_REFRESH_MS = 5000
-var CALC_REFRESH_KEY = "histLastLoad"
-
-function calcDetectDoubleRefresh() {
-	var now = Date.now()
-	var last = 0
-	try { last = Number(window.sessionStorage.getItem(CALC_REFRESH_KEY)) || 0 } catch (e) { return false }
-
-	var quick = (last > 0 && now - last < CALC_DOUBLE_REFRESH_MS)
-	// consumed either way, so a third reload starts counting again instead of
-	// resetting over and over
-	try { window.sessionStorage.setItem(CALC_REFRESH_KEY, quick ? "0" : String(now)) } catch (e) {}
-	return quick
-}
-
-// only the calculator page has settings to reset
-var calcDoubleRefresh = (typeof exportCalcOptions === "function") ? calcDetectDoubleRefresh() : false
