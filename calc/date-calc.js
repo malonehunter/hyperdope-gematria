@@ -191,9 +191,9 @@ function toggleDateCalcMenu() {
 		o += '<div class="dateCalcBg">'
 
 		o += '<table class="dateCalcTable2"><tbody>'
-		o += '<tr style="line-height: 0.9em;"><td><div id="dateDesc1Area"><input class="dateDescription" id="dateDesc1" value="'+dateDesc1Saved+'"></div></td></tr>' // Date 1 label
+		o += '<tr style="line-height: 0.9em;"><td><div id="dateDesc1Area"><input class="dateDescription" id="dateDesc1" value="'+escHtml(dateDesc1Saved)+'"></div></td></tr>' // Date 1 label
 		o += '<tr style="line-height: 0.9em;"><td style="padding-bottom: 0.5em;"><span id="d1full_t2" class="dateDetailsText"></span></td></tr>' // Date 1
-		o += '<tr style="line-height: 0.9em;"><td><div id="dateDesc2Area"><input class="dateDescription" id="dateDesc2" value="'+dateDesc2Saved+'"></div></td></tr>' // Date 2 label
+		o += '<tr style="line-height: 0.9em;"><td><div id="dateDesc2Area"><input class="dateDescription" id="dateDesc2" value="'+escHtml(dateDesc2Saved)+'"></div></td></tr>' // Date 2 label
 		o += '<tr style="line-height: 0.9em;"><td style="padding-bottom: 0.5em;"><span id="d2full_t2" class="dateDetailsText"></span></td></tr>' // Date 2
 		o += '<tr><td style="background: var(--menu-bg-accent); padding: 0.4em 0.75em 0.5em 0.75em;"><span id="dateDurValues" class="dateDetailsText"></span></td></tr>'
 		o += '</tbody></table>'

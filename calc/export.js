@@ -20,8 +20,8 @@ function openImageWindow(element, imgName = "", sRatio = window.devicePixelRatio
 			imageDataURL = trimCanvas(canvas); // canvas to "data:image/png;base64, ..."
 
 			if (element == '.dateCalcTable2') { // restore date labels as input
-				$('#dateDesc1Area').html('<input class="dateDescription" id="dateDesc1" value="'+dateDesc1Saved+'">')
-				$('#dateDesc2Area').html('<input class="dateDescription" id="dateDesc2" value="'+dateDesc2Saved+'">')
+				$('#dateDesc1Area').html('<input class="dateDescription" id="dateDesc1" value="'+escHtml(dateDesc1Saved)+'">')
+				$('#dateDesc2Area').html('<input class="dateDescription" id="dateDesc2" value="'+escHtml(dateDesc2Saved)+'">')
 				$('.dateCalcTable2').removeClass('elemBorderScr') // add outline
 			}
 

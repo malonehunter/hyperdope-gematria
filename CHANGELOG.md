@@ -1,5 +1,12 @@
 # Changelog
 
+## v2.6.1
+
+### Security
+- **Date Calculator labels are escaped (`escHtml`).** The From/to description fields were written
+  into the page as HTML when the date menu redrew and around *Print Date Durations*; they now render
+  as literal text, completing the v2.6.0 escaping pass. No database or settings changes.
+
 ## v2.6.0
 
 ### Security

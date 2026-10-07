@@ -331,8 +331,8 @@ $(document).ready(function(){
 		openImageWindow(".HistoryTable", fileName, 2.0);
 	});
 	$("body").on("click", "#btn-date-calc-png", function () {
-		$('#dateDesc1Area').html('<span class="dateDescription">'+dateDesc1Saved+'</span>') // input to fixed text
-		$('#dateDesc2Area').html('<span class="dateDescription">'+dateDesc2Saved+'</span>')
+		$('#dateDesc1Area').html('<span class="dateDescription">'+escHtml(dateDesc1Saved)+'</span>') // input to fixed text
+		$('#dateDesc2Area').html('<span class="dateDescription">'+escHtml(dateDesc2Saved)+'</span>')
 		$('.dateCalcTable2').addClass('elemBorderScr') // add outline
 		// phrase-with-spaces_2021-03-26_10-23-52_table.png
 		var fileName = (saved_d1.getMonth()+1)+'-'+saved_d1.getDate()+'-'+saved_d1.getFullYear()+'_'+
