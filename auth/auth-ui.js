@@ -172,6 +172,14 @@ function renderAuthNav() {
 		else o += '<span class="authNavAvatar authNavAvatarFallback">' + authEsc(authDisplayName().charAt(0).toUpperCase()) + '</span>'
 		o += '<span class="authNavName">' + authEsc(authDisplayName()) + '</span>'
 		o += '</a>'
+		// Standalone/mobile installs have no browser reload control. Keep this on
+		// the calculator only: auth pages must not discard a form in progress, and
+		// signed-out visitors do not have account-backed history/workspace restore.
+		// The real link is a no-JavaScript fallback; the handler prevents a second
+		// navigation and requests exactly one ordinary reload.
+		if (inApp) {
+			o += '<a class="authNavLink authNavReload" href="index.html" title="Reload calculator" aria-label="Reload calculator" onclick="return authNavReload(event)">&#8635; Reload</a>'
+		}
 		// only drawn for admins, and only as a shortcut - admin.html checks for
 		// itself and every function it calls checks again in the database
 		if (typeof adminIsAdmin !== "undefined" && adminIsAdmin === true) {
@@ -180,6 +188,12 @@ function renderAuthNav() {
 		o += '<a class="authNavLink" href="#" onclick="authNavSignOut(event)">Logout</a>'
 	}
 	area.innerHTML = o
+}
+
+function authNavReload(e) {
+	if (e) e.preventDefault()
+	window.location.reload()
+	return false
 }
 
 function authNavSignOut(e) {
