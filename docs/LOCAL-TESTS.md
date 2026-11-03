@@ -11,9 +11,9 @@ bash scripts/test-local.sh full
 
 The runner works from any current directory. It installs nothing and executes
 Node's built-in test runner. `full` includes every top-level `tests/*.test.js`;
-`safety` explicitly includes refresh safety and cloud-restore safety. New tests
-must follow that naming convention. Missing suites and failing assertions exit
-nonzero. No existing suite or application source was changed for CI.
+`safety` explicitly includes refresh safety, cloud-restore safety, and atomic
+history-reconciliation safety. New tests must follow that naming convention.
+Missing suites and failing assertions exit nonzero.
 
 The historical `tests/localstorage_test.js` is Windows Script Host/ActiveX code,
 not a Node test. `tests/localstorage_test.py` attempts to execute JavaScript with
@@ -58,7 +58,29 @@ build/deployment. It does not gate a separate Pages deployment after a direct
 push. Branch protections are needed to prevent unchecked default-branch writes.
 No repository settings were changed by this work.
 
-## Verified local baseline
+## History reconciliation checkpoint (2026-11-01)
+
+The new `tests/history-sync-reconciliation.test.js` is part of the required
+safety set. It executes production history sync in isolated VMs and uses the
+vendored Supabase client with intercepted `fetch` to prove that a supported
+snapshot produces one short RPC `POST`, with phrases only in its body. It also
+proves canonical full-history handling during Match filtering, zero remote
+writes above 2,000 phrases, bounded retry/pending behavior, the migration's
+caller-scoped contract, and every served history-sync content key.
+
+Local Node 26.7.0 results after implementation:
+
+| Repository | Focused history | Safety | Full |
+| --- | --- | --- | --- |
+| gematro-hyperdope | 8 / 8 | 49 / 49 | 67 pass / 1 known Numogram fail |
+| ciphersnews | 8 / 8 | 49 / 49 | 67 pass / 1 known Numogram fail |
+| cyphers-news.github.io | 8 / 8 | 49 / 49 | 73 / 73 |
+
+These are local synthetic tests. They do not prove that the migration has been
+applied, a deployed client is current, a real member can sync, or provider logs
+are clean. Database application and client deployment remain separate gates.
+
+## Earlier verified CI baseline
 
 At the inspected default-branch heads:
 
@@ -82,13 +104,12 @@ The runner now explicitly checks that every selected file exists and is readable
 before launching Node. Both individual-missing-file tests failed before this
 correction and passed afterward.
 
-`tests/test-local-runner.test.js` contains ten reproducible synthetic checks:
-each safety file individually missing, both missing, empty full suite, invalid
-mode, isolated passing safety, a failure in each safety file, passing full suite,
-and a discovered failure outside the safety list. It invokes the real runner
-from another working directory with disposable fixtures; it does not load the
-application or call network services. All ten pass on Node 24.21.0 in each repo.
-No pre-existing test was modified.
+`tests/test-local-runner.test.js` now contains twelve reproducible synthetic
+checks: each of the three safety files individually missing, all missing, empty
+full suite, invalid mode, isolated passing safety, a failure in each safety
+file, passing full suite, and a discovered failure outside the safety list. It
+invokes the real runner from another working directory with disposable
+fixtures; it does not load the application or call network services.
 
 With those ten regression cases included, the final local full-suite results on
 Node 24.21.0 are **57 pass / 1 fail** for gematro-hyperdope, **52 pass / 1 fail**
@@ -99,9 +120,10 @@ Scratch execution logs are not published in this repository.
 
 No GitHub-hosted run has been executed or verified by this local-only work.
 Browser appearance, live persistence, deployed cache headers and warm-cache
-behavior are not covered. No cache-reference gate was invented here: the test
-workflow changes no served JavaScript or HTML asset URL. Release cache audits
-remain a separate release obligation.
+behavior are not covered. At that earlier checkpoint there was no
+cache-reference gate. The 2026-11-01 history reconciliation test now verifies
+the content-derived key for every served `auth/history-sync.js` consumer;
+deployed cache behavior remains a separate release obligation.
 
 ## Numogram diagnosis: not just one off-mode assertion
 

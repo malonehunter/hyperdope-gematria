@@ -19,10 +19,14 @@ var histSyncSaving = false
 var histSyncPending = false
 var histSyncLoaded = false      // don't push anything before the first load
 var histSyncStatusEl = null
+var histSyncRetryHash = null
+var histSyncRetryCount = 0
+var histSyncRetryAt = 0
 
 var HIST_SYNC_TICK_MS = 1200    // how often to look for a change
 var HIST_SYNC_QUIET_MS = 900    // wait for edits to settle before writing
 var HIST_SYNC_MAX = 2000        // safety cap on rows per user
+var HIST_SYNC_RETRY_DELAYS = [5000, 30000, 120000]
 
 // djb2 over the joined history; the separator cannot appear in a phrase
 function histHash(arr) {
@@ -82,6 +86,7 @@ function histSyncLoad() {
 
 			histSyncLoaded = true
 			histSyncLastHash = histHash(saved) // what the server actually holds
+			histSyncResetRetry()
 
 			if (added > 0) {
 				histSyncSetStatus("Restored " + added + (added === 1 ? " phrase" : " phrases"), "ok")
@@ -104,53 +109,99 @@ function histSyncLoad() {
 
 // ---- save -------------------------------------------------------------
 
+// Match filtering temporarily replaces sHistory with a visible subset and
+// keeps the complete list in userHistory. Reconciliation must use the complete
+// list or a filtered view can be mistaken for an intentional deletion.
+function histSyncSnapshot() {
+	var visible = (typeof sHistory !== "undefined" && Array.isArray(sHistory)) ? sHistory : []
+	if (typeof userHistory === "undefined" || !Array.isArray(userHistory) || userHistory.length === 0) {
+		return visible.slice()
+	}
+
+	var snapshot = userHistory.slice()
+	var seen = Object.create(null)
+	for (var i = 0; i < snapshot.length; i++) seen["$" + snapshot[i]] = true
+	for (var j = 0; j < visible.length; j++) {
+		var key = "$" + visible[j]
+		if (seen[key] !== true) { seen[key] = true; snapshot.push(visible[j]) }
+	}
+	return snapshot
+}
+
+function histSyncResetRetry() {
+	histSyncRetryHash = null
+	histSyncRetryCount = 0
+	histSyncRetryAt = 0
+}
+
+function histSyncPrepareRetry(hash) {
+	if (histSyncRetryHash === hash) return
+	histSyncRetryHash = hash
+	histSyncRetryCount = 0
+	histSyncRetryAt = 0
+}
+
+function histSyncRetryAllowed(hash) {
+	histSyncPrepareRetry(hash)
+	if (histSyncRetryCount > HIST_SYNC_RETRY_DELAYS.length) return false
+	return Date.now() >= histSyncRetryAt
+}
+
+function histSyncRecordFailure(hash) {
+	histSyncPrepareRetry(hash)
+	histSyncRetryCount += 1
+	if (histSyncRetryCount <= HIST_SYNC_RETRY_DELAYS.length) {
+		histSyncRetryAt = Date.now() + HIST_SYNC_RETRY_DELAYS[histSyncRetryCount - 1]
+		return false
+	}
+	histSyncRetryAt = Number.POSITIVE_INFINITY
+	return true
+}
+
 function histSyncSave() {
 	var client = getAuthClient()
-	if (client === null || authUser === null || !histSyncLoaded) return Promise.resolve()
-	if (histSyncSaving) { histSyncPending = true; return Promise.resolve() }
+	if (client === null || authUser === null || !histSyncLoaded) return Promise.resolve(false)
+	if (histSyncSaving) { histSyncPending = true; return Promise.resolve(false) }
 
-	var snapshot = (typeof sHistory !== "undefined") ? sHistory.slice(0, HIST_SYNC_MAX) : []
+	var snapshot = histSyncSnapshot()
 	var hash = histHash(snapshot)
-	if (hash === histSyncLastHash) return Promise.resolve()
+	if (snapshot.length > HIST_SYNC_MAX) {
+		histSyncPrepareRetry(hash)
+		histSyncRetryCount = HIST_SYNC_RETRY_DELAYS.length + 1
+		histSyncRetryAt = Number.POSITIVE_INFINITY
+		histSyncSetStatus("History too large to sync — export or reduce below 2,000", "warn")
+		return Promise.resolve(false)
+	}
+	if (hash === histSyncLastHash) { histSyncResetRetry(); return Promise.resolve(true) }
+	if (!histSyncRetryAllowed(hash)) return Promise.resolve(false)
 
 	histSyncSaving = true
 	histSyncSetStatus("Saving…", "busy")
 
-	var rows = snapshot.map(function (p, i) {
-		return { user_id: authUser.id, phrase: p, position: i }
-	})
-
-	// Remove anything no longer present, then upsert the rest. Two statements
-	// rather than delete-all-and-reinsert, so created_at survives on phrases
-	// that were already saved.
-	var del = client.from("history_entries").delete().eq("user_id", authUser.id)
-	if (snapshot.length > 0) del = del.not("phrase", "in", "(" + snapshot.map(histSqlQuote).join(",") + ")")
-
-	return del
+	// The database function validates and reconciles the complete snapshot in
+	// one transaction. Phrase text stays in the POST body, never in a URL.
+	return client.rpc("history_entries_sync", { phrases: snapshot })
 		.then(function (res) {
 			if (res.error) throw res.error
-			if (rows.length === 0) return { error: null }
-			return client.from("history_entries").upsert(rows, { onConflict: "user_id,phrase" })
-		})
-		.then(function (res) {
-			if (res && res.error) throw res.error
 			histSyncLastHash = hash
+			histSyncResetRetry()
 			histSyncSetStatus("Saved", "ok")
-			setTimeout(function () { histSyncSetStatus("Synced", "ok") }, 1200)
+			setTimeout(function () {
+				if (histHash(histSyncSnapshot()) === histSyncLastHash) histSyncSetStatus("Synced", "ok")
+			}, 1200)
+			return true
 		})
 		.catch(function (err) {
-			histSyncSetStatus("Not saved", "warn")
+			var paused = histSyncRecordFailure(hash)
+			histSyncSetStatus(paused ? "Not saved — sync paused" : "Not saved — retrying", "warn")
 			console.warn("history sync save failed:", err.message || err)
+			return false
 		})
-		.then(function () {
+		.then(function (saved) {
 			histSyncSaving = false
 			if (histSyncPending) { histSyncPending = false; histSyncSave() }
+			return saved
 		})
-}
-
-// PostgREST's in() filter takes a bare list, so quote and escape each phrase
-function histSqlQuote(s) {
-	return '"' + String(s).replace(/\\/g, "\\\\").replace(/"/g, '\\"') + '"'
 }
 
 // ---- change watcher ---------------------------------------------------
@@ -171,7 +222,7 @@ function histSyncFlush() {
 
 function histSyncTick() {
 	if (!histSyncEnabled || !histSyncLoaded || typeof sHistory === "undefined") return
-	var hash = histHash(sHistory)
+	var hash = histHash(histSyncSnapshot())
 	if (hash === histSyncLastHash) return
 
 	// wait for a quiet moment so a burst of edits becomes one write
@@ -195,6 +246,10 @@ function histSyncStop() {
 	histSyncEnabled = false
 	histSyncLoaded = false
 	histSyncLastHash = null
+	histSyncPending = false
+	histSyncQuietUntil = 0
+	histSyncTick.seen = null
+	histSyncResetRetry()
 	histSyncSetStatus("", null)
 }
 
@@ -209,6 +264,7 @@ function histSyncClearSaved() {
 		.then(function (res) {
 			if (res.error) throw res.error
 			histSyncLastHash = histHash([])
+			histSyncResetRetry()
 			return true
 		})
 }

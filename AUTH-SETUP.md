@@ -904,3 +904,30 @@ progress cannot be saved - `tourProgressGet()`/`tourProgressSave()` catch
 the failure and fall back to in-memory defaults, so the welcome prompt
 would reappear every page load instead of staying dismissed. Nothing
 crashes either way.
+
+## Atomic history reconciliation
+
+`supabase/migrations/20261101000000_history_entries_sync.sql` — run after
+`20260802010000_history_entries.sql`. The three site repositories use one
+Supabase project, so apply this migration to that shared project once, before
+deploying any client that contains the matching `auth/history-sync.js`.
+
+The function accepts only a phrase array, derives the member from `auth.uid()`,
+validates the complete snapshot, and reconciles that member's rows in one
+transaction. Ordinary saves therefore send one short `POST` URL with phrases
+in the request body instead of serializing the phrase corpus into a filtered
+`DELETE` URL. The explicit member history-clear action remains a separate,
+user-scoped delete.
+
+Cloud history remains capped at 2,000 phrases. Above that limit the client
+does not truncate, delete, or send anything: it preserves the complete local
+history and shows "History too large to sync — export or reduce below 2,000".
+Export CSV before reducing or closing the only tab that still holds an
+oversized history. A failed supported snapshot gets the initial attempt plus
+three delayed retries, then pauses until its contents change or a new page
+session begins.
+
+Rollout order is database first, then the three static clients. If a new client
+appears before the function exists, local history remains intact and sync
+eventually reports that it is paused; do not clear the member's browser state
+as a recovery step.

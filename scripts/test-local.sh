@@ -12,7 +12,7 @@ case "${1:-full}" in
     fi
     ;;
   safety)
-    tests=(tests/refresh-safety.test.js tests/cloud-restore-safety.test.js)
+    tests=(tests/refresh-safety.test.js tests/cloud-restore-safety.test.js tests/history-sync-reconciliation.test.js)
     ;;
   *) printf 'Usage: bash scripts/test-local.sh [full|safety]\n' >&2; exit 2 ;;
 esac

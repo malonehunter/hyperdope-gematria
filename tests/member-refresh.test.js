@@ -61,7 +61,8 @@ test('signed-in calculator members receive one explicit history-clear action', (
 	const f = fixture();
 	f.context.renderAuthNav();
 	assert.match(f.area.innerHTML, /class="authNavLink authNavHistoryClear"/);
-	assert.match(f.area.innerHTML, /aria-label="Clear saved phrase history"/);
+	assert.match(f.area.innerHTML, /title="Click once to arm, again to clear saved phrase history"/);
+	assert.match(f.area.innerHTML, /aria-label="Clear saved phrase history; requires two clicks"/);
 	assert.match(f.area.innerHTML, /onclick="return authNavClearHistory\(this,event\)"/);
 });
 

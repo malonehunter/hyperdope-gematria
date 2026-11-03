@@ -6,7 +6,11 @@ const os = require('node:os');
 const path = require('node:path');
 const { spawnSync } = require('node:child_process');
 
-const required = ['refresh-safety.test.js', 'cloud-restore-safety.test.js'];
+const required = [
+  'refresh-safety.test.js',
+  'cloud-restore-safety.test.js',
+  'history-sync-reconciliation.test.js'
+];
 const pass = "require('node:test').test('synthetic pass', () => {});\n";
 const fail = "require('node:test').test('synthetic failure', () => { throw new Error('expected failure'); });\n";
 
@@ -34,7 +38,7 @@ function runFixture(files, mode) {
 }
 
 for (const missing of required) {
-  test(`safety runner rejects missing ${missing} even when the other file passes`, () => {
+  test(`safety runner rejects missing ${missing} even when the remaining files pass`, () => {
     const files = Object.fromEntries(required.filter(name => name !== missing).map(name => [name, pass]));
     const result = runFixture(files, 'safety');
     assert.notEqual(result.status, 0, 'a partially absent safety suite must not pass');

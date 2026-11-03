@@ -342,16 +342,21 @@ Separate page (`admin.html`), gated by `admin_require()`.
 > `posts` and `post_likes` are dropped by `20260808000000_remove_feed.sql` —
 > they belonged to the removed feed. **Do not rebuild them.**
 
-**58 database functions**, all `security definer` where they cross a privacy
+**59 database functions**, all `security definer` where they cross a privacy
 boundary. **Row Level Security is on every table** — the anon key is public by
 design, so RLS is the actual security boundary, not an extra layer.
 
 **1 storage bucket:** `avatars`.
 
 ### Sync
-- **History sync** — debounced, hash-compared so unchanged history is not
-  rewritten, with status reporting. Reloading never clears history or resets the
-  workspace; use the explicit right-click reset control to start over.
+- **History sync** — debounced and hash-compared, with one atomic account-scoped
+  reconciliation request for each supported snapshot. Histories above 2,000
+  phrases remain complete locally while cloud sync pauses with export guidance;
+  failed unchanged snapshots stop after a bounded retry sequence. Reloading
+  never clears history or resets the workspace. Signed-in calculator members
+  can use the two-step **↻ Clear** action to empty the visible table and its
+  saved account copy; the explicit right-click reset also restores the
+  calculator defaults.
 - **Workspace sync** — the full settings object, same hash-compare approach
 
 ## 21. Cross-cutting

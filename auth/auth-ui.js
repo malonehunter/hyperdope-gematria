@@ -176,7 +176,7 @@ function renderAuthNav() {
 		// way to start with an empty table. Keep this explicit destructive action
 		// on the calculator only; its handler requires a second deliberate click.
 		if (inApp) {
-			o += '<a class="authNavLink authNavHistoryClear" href="#" title="Clear saved phrase history" aria-label="Clear saved phrase history" onclick="return authNavClearHistory(this,event)">&#8635; Clear</a>'
+			o += '<a class="authNavLink authNavHistoryClear" href="#" title="Click once to arm, again to clear saved phrase history" aria-label="Clear saved phrase history; requires two clicks" onclick="return authNavClearHistory(this,event)">&#8635; Clear</a>'
 		}
 		// only drawn for admins, and only as a shortcut - admin.html checks for
 		// itself and every function it calls checks again in the database

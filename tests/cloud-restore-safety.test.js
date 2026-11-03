@@ -10,7 +10,10 @@ function fixture(kind, reply) {
   const calls = [], ready = [], authReady = [], intervals = [], events = {};
   let now = 10000;
   const blocked = () => { throw new Error('Network forbidden'); };
-  const client = { auth: { onAuthStateChange() {} }, from(table) {
+  const client = { auth: { onAuthStateChange() {} }, rpc(name, args) {
+    calls.push({ operation: 'rpc', table: 'history_entries', name, args });
+    return Promise.resolve({ error: null });
+  }, from(table) {
     let operation;
     const query = {
       select() { operation = 'select'; return query; },
@@ -44,7 +47,7 @@ function fixture(kind, reply) {
   vm.runInContext(fs.readFileSync(path.join(__dirname, '..', 'auth', `${kind}-sync.js`), 'utf8'), context);
   const prefix = history ? 'hist' : 'ws';
   return { context, calls,
-    writes: () => calls.filter(c => c.operation === 'delete' || c.operation === 'upsert'),
+    writes: () => calls.filter(c => c.operation === 'delete' || c.operation === 'upsert' || c.operation === 'rpc'),
     async load() { ready.forEach(fn => fn()); authReady.forEach(fn => fn(context.authUser)); await settle(); },
     async tick() { now += 10000; intervals.forEach(fn => fn()); await settle(); },
     async unload() { (events.beforeunload || []).forEach(fn => fn()); await settle(); },
@@ -72,7 +75,7 @@ for (const kind of ['history', 'workspace']) {
     await f.retry(); await settle();
     f.context.sHistory.push('post-restore edit'); f.context.settings = 'post-restore edit';
     await f.tick(); await f.tick(); await f.unload();
-    assert.ok(f.writes().some(c => c.operation === 'upsert'));
+    assert.ok(f.writes().some(c => c.operation === (kind === 'history' ? 'rpc' : 'upsert')));
     if (kind === 'history') {
       assert.ok(f.context.sHistory.includes('remote phrase'));
       assert.ok(f.context.sHistory.includes('local phrase'));
@@ -88,7 +91,7 @@ for (const kind of ['history', 'workspace']) {
     assert.equal(f.writes().length, 0, 'adopting empty cloud is read-only');
     f.context.sHistory.push('new phrase'); f.context.settings = 'new workspace';
     await f.tick(); await f.tick(); await f.unload();
-    assert.ok(f.writes().some(c => c.operation === 'upsert'));
+    assert.ok(f.writes().some(c => c.operation === (kind === 'history' ? 'rpc' : 'upsert')));
     if (kind === 'workspace') assert.equal(await f.save(true), true);
   });
 }
@@ -181,7 +184,7 @@ for (const kind of ['history', 'workspace']) {
     await f.retry();
     f.context.sHistory.push('edited'); f.context.settings = 'edited';
     await f.tick(); await f.tick(); await f.unload();
-    assert.ok(f.writes().some(c => c.operation === 'upsert'));
+    assert.ok(f.writes().some(c => c.operation === (kind === 'history' ? 'rpc' : 'upsert')));
   });
   test(`${kind}: explicit clear remains usable after unsuccessful load`, async () => {
     const f = fixture(kind, () => ({ error: new Error('offline') }));
